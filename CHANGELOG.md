@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/jaredLunde/proser/compare/v0.1.2...v0.1.4) (2020-08-16)
+
+### Bug Fixes
+
+- fix export and metadata bug ([967604b](https://github.com/jaredLunde/proser/commit/967604bc85092aba902eb4de4bd5f2329c35a7ab))
+- **bin/index.tsx:** add node path ([da916d7](https://github.com/jaredLunde/proser/commit/da916d7869f223a81b11c7efafc2899b75ba8a7e))
+- **package.json:** remove esm build for bin ([b077960](https://github.com/jaredLunde/proser/commit/b077960af56abeb0e1163dd68b3df599307fd78e))
+
 ### [0.1.3](https://github.com/jaredLunde/proser/compare/v0.1.2...v0.1.3) (2020-08-16)
 
 ### Bug Fixes
