@@ -47,7 +47,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "proser": "lundle build -e ./bin -f cjs && node bin/dist/main/index.js",
+    "proser": "lundle build -e ./bin -f cjs && node bin/dist/index.js",
     "build": "lundle build",
     "check-types": "lundle check-types",
     "dev": "lundle build -f module,cjs -w",
@@ -160,6 +160,7 @@
     "@babel/template": "^7.10.4",
     "@inst-cli/template": "^1.0.0",
     "@mdx-js/mdx": "^1.6.16",
+    "@types/babel-types": "^7.0.8",
     "@types/glob": "^7.1.3",
     "babel-types": "^6.26.0",
     "chokidar": "^3.4.2",

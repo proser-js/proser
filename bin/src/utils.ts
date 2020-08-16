@@ -237,7 +237,7 @@ export async function readMetadata(filepath: string) {
           const child = tree.children[i]
 
           if (child.type === 'export') {
-            mdxExports += child.value
+            mdxExports += '\n' + child.value
           }
         }
       },

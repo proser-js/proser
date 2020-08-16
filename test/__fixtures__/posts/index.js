@@ -12,13 +12,13 @@ export const posts = {
 
     component: /*#__PURE__*/ React.lazy(() => import('./0-whoa-whoa-whoa.mdx')),
     metadata: {
-      id: 0,
       timestamp: 1597553433835,
       title: 'Whoa whoa whoa',
       description: 'Hello hello hello',
       tags: [],
       categories: [],
     },
+    testing12: {34: 56},
   },
 
   'hello-world': {
@@ -26,7 +26,6 @@ export const posts = {
 
     component: /*#__PURE__*/ React.lazy(() => import('./1-hello-world.mdx')),
     metadata: {
-      id: 1,
       timestamp: 1597553470215,
       title: 'Hello world',
       description: 'This is a blog post.',
@@ -34,14 +33,26 @@ export const posts = {
       categories: [],
     },
   },
+
   'another-post': {
     id: 2,
+
     component: /*#__PURE__*/ React.lazy(() => import('./2-another-post.mdx')),
     metadata: {
-      id: 2,
       timestamp: 1597553898221,
       title: 'Another post',
       description: 'Yet another post',
+      tags: [],
+      categories: [],
+    },
+  },
+  'fix-that-bug': {
+    id: 3,
+    component: /*#__PURE__*/ React.lazy(() => import('./3-fix-that-bug.mdx')),
+    metadata: {
+      title: 'Fix that bug',
+      description: 'Does it fix the bug?',
+      timestamp: 1597556571967,
       tags: [],
       categories: [],
     },

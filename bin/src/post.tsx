@@ -147,10 +147,9 @@ export async function bin(indexFile: string) {
 
           writePost(filepath, {
             metadata: {
-              id,
-              timestamp: Date.now(),
               title,
               description,
+              timestamp: Date.now(),
               tags,
               categories,
             },

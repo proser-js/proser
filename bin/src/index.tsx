@@ -30,7 +30,7 @@ switch (argv._[0]) {
       React.createElement(() => {
         const [message, setMessage] = React.useState('⋯ Building')
         React.useEffect(() => {
-          buildBin(argv.index).then(() => {
+          buildBin(indexFile).then(() => {
             setMessage('Built')
           })
         }, [])
