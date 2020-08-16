@@ -21,19 +21,6 @@ export const posts = {
     testing12: {34: 56},
   },
 
-  'hello-world': {
-    id: 1,
-
-    component: /*#__PURE__*/ React.lazy(() => import('./1-hello-world.mdx')),
-    metadata: {
-      timestamp: 1597553470215,
-      title: 'Hello world',
-      description: 'This is a blog post.',
-      tags: [],
-      categories: [],
-    },
-  },
-
   'another-post': {
     id: 2,
 
@@ -46,8 +33,10 @@ export const posts = {
       categories: [],
     },
   },
+
   'fix-that-bug': {
     id: 3,
+
     component: /*#__PURE__*/ React.lazy(() => import('./3-fix-that-bug.mdx')),
     metadata: {
       title: 'Fix that bug',

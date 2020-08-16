@@ -294,3 +294,9 @@ export async function writePost(
   await fs.writeFile(filepath, contents)
   return contents
 }
+
+export async function deletePost(filepath: string) {
+  if (existsSync(filepath)) {
+    await fs.unlink(filepath)
+  }
+}

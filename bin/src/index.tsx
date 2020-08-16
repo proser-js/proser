@@ -50,7 +50,7 @@ switch (argv._[0]) {
     break
 
   case 'delete':
-    deleteBin(indexFile)
+    deleteBin(indexFile, {slug: argv._[1]})
     break
 
   case 'post':

@@ -256,4 +256,50 @@ describe('useRelatedPosts()', () => {
 
     expect(result.current).toEqual([posts[2], posts[1]])
   })
+
+  it('should weight multiple matches', () => {
+    const posts = [
+      {
+        id: 0,
+        metadata: {
+          title: 'Hello cats',
+          tags: ['cat', 'mouse', 'fish'],
+          categories: ['animals'],
+          popularity: 0.1,
+        },
+      },
+      {
+        id: 1,
+        metadata: {
+          title: 'Hello dogs',
+          tags: ['dog', 'pet'],
+          categories: ['animals'],
+          popularity: 0.5,
+        },
+      },
+      {
+        id: 2,
+        metadata: {
+          title: 'Hello food',
+          tags: ['mouse', 'cat', 'fish'],
+          categories: ['food'],
+          popularity: 0.2,
+        },
+      },
+    ]
+
+    const {result} = renderHook(
+      ({weight}) => useRelatedPosts(posts[0], posts, weight),
+      {
+        initialProps: {
+          weight: {
+            tags: 0.5,
+            categories: 1,
+          },
+        },
+      }
+    )
+
+    expect(result.current).toEqual([posts[2], posts[1]])
+  })
 })
