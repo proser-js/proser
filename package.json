@@ -13,7 +13,7 @@
     "proser"
   ],
   "bin": {
-    "proser": "bin/dist/index.js"
+    "proser": "bin/dist/main/index.js"
   },
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
