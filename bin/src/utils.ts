@@ -28,6 +28,7 @@ const POST_TYPES = `/**
 import React from 'react'
 
 export type Post = {
+  id: number
   component: React.LazyExoticComponent<(props: any) => JSX.Element>
   metadata: {
     title: string
