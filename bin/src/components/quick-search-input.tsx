@@ -207,7 +207,7 @@ export const QuickSearch: FC<QuickSearchProps> = (props) => {
 
   function handleKeyPress(ch: string, key: KeyPress) {
     if (!focus) return
-    if (!key && !isNaN(ch as any)) {
+    if (!key) {
       addCharToQuery(ch)
       return
     }
