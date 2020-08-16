@@ -1,6 +1,6 @@
 <hr/>
 
-# Proser
+# ✐ Proser
 
 > Create a blog with React and MDX
 
