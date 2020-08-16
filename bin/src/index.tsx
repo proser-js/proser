@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import path from 'path'
 import React from 'react'
 import minimist from 'minimist'
