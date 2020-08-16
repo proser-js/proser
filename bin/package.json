@@ -5,14 +5,14 @@
   "repository": "github:proser-js/proser",
   "bugs": "https://github.com/proser-js/proser/issues",
   "license": "MIT",
-  "main": "dist/main/index.js",
+  "main": "dist/index.js",
   "source": "src/index.tsx",
   "types": "types/index.d.ts",
   ".": {
-    "require": "./dist/main/index.js",
+    "require": "./dist/index.js",
     "source": "./src/index.tsx",
     "types": "./types/index.d.ts",
-    "default": "./dist/main/index.js"
+    "default": "./dist/index.js"
   },
   "./package.json": "./package.json",
   "./": "./",

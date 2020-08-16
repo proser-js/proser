@@ -1,6 +1,6 @@
 {
   "name": "proser",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "homepage": "https://github.com/jaredLunde/proser#readme",
   "repository": "github:jaredLunde/proser",
   "bugs": "https://github.com/jaredLunde/proser/issues",
@@ -13,7 +13,7 @@
     "proser"
   ],
   "bin": {
-    "proser": "bin/dist/main/index.js"
+    "proser": "bin/dist/index.js"
   },
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
@@ -31,10 +31,10 @@
       "default": "./dist/main/index.js"
     },
     "./bin": {
-      "require": "./bin/dist/main/index.js",
+      "require": "./bin/dist/index.js",
       "source": "./bin/src/index.tsx",
       "types": "./bin/types/index.d.ts",
-      "default": "./bin/dist/main/index.js"
+      "default": "./bin/dist/index.js"
     },
     "./package.json": "./package.json",
     "./": "./"
