@@ -1,5 +1,4 @@
 import path from 'path'
-import {promises as fs, existsSync} from 'fs'
 import {promisify} from 'util'
 import glob_ from 'glob'
 import React from 'react'
@@ -16,7 +15,6 @@ const glob = promisify(glob_)
 
 export async function bin(indexFile: string) {
   const slugs = []
-  const exportsPromises = []
   let id = 0
 
   for (const file of await glob('**/*.mdx', {
