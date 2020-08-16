@@ -31,7 +31,6 @@
       "default": "./dist/main/index.js"
     },
     "./bin": {
-      "import": "./bin/dist/esm/index.mjs",
       "require": "./bin/dist/main/index.js",
       "source": "./bin/src/index.tsx",
       "types": "./bin/types/index.d.ts",
