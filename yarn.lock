@@ -1454,10 +1454,23 @@
   dependencies:
     "@react-hook/latest" "^1.0.2"
 
+"@react-hook/change@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@react-hook/change/-/change-1.0.0.tgz#4604bc93d616fcc0311f528464edd7cb24083289"
+  integrity sha512-NwkNxq6PZ5XRZ9gcBhE1kmTXtNf4/YayZXaLviCWowBkmXWKcRKtmBZBlAj86LbWxReWZgyINaYsPDxEEa2MKQ==
+  dependencies:
+    "@react-hook/latest" "^1.0.2"
+    "@react-hook/previous" "^1.0.1"
+
 "@react-hook/latest@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@react-hook/latest/-/latest-1.0.2.tgz#767eb6974f91eef353981b8b60a87147dadecb18"
   integrity sha512-zLtOIToct1EBTbwldkMJsXC2eCsmWOOP7z6UG0M/sCgnPExtIjvVMCpPESvPnMbQzDZytXVy0nvMbUuK2gZs2A==
+
+"@react-hook/previous@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@react-hook/previous/-/previous-1.0.1.tgz#61f499e855873dcdb64e7b98f302194548f267f4"
+  integrity sha512-O7VaRLDEHRy1hxh03CmtWRxDhCwIVQBBkf1kYdYqUP3KNrPnQMIVIYYYQpHIIiNcS1BO6zmBKM4bugFDNgP8Iw==
 
 "@rollup/plugin-babel@^5.0.2":
   version "5.1.0"
@@ -6252,6 +6265,11 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
+
+natural-orderby@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/natural-orderby/-/natural-orderby-2.0.3.tgz#8623bc518ba162f8ff1cdb8941d74deb0fdcc016"
+  integrity sha512-p7KTHxU0CUrcOXe62Zfrb5Z13nLvPhSWR/so3kFulUQU0sgUll2Z0LwpsLN351eOOD+hRGu/F1g+6xDfPeD++Q==
 
 neo-async@^2.6.0:
   version "2.6.2"
