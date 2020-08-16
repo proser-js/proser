@@ -1,4 +1,5 @@
 import path from 'path'
+import {promises as fs, existsSync} from 'fs'
 import {promisify} from 'util'
 import glob_ from 'glob'
 import React from 'react'
@@ -6,13 +7,16 @@ import {render, Box, Text} from 'ink'
 import TextInput from 'ink-text-input'
 import openEditor from 'open-editor'
 import slugify from 'slugify'
+import {QuickSearch} from './components/quick-search-input'
+import type {Item} from './components/quick-search-input'
 import {bin as buildBin} from './build'
-import {writePost} from './utils'
+import {writePost, importIndexFile} from './utils'
 
 const glob = promisify(glob_)
 
 export async function bin(indexFile: string) {
   const slugs = []
+  const exportsPromises = []
   let id = 0
 
   for (const file of await glob('**/*.mdx', {
@@ -21,8 +25,23 @@ export async function bin(indexFile: string) {
   })) {
     const basename = path.basename(file)
     slugs.push(basename.replace('.mdx', '').replace(/^[0-9]+?-/, ''))
-
     id = Math.max(parseInt(basename.split('-')[0]) + 1, id)
+  }
+
+  const indexFileExports = await importIndexFile(indexFile)
+  let defaultTags: {label: string; value: string}[] = []
+  let defaultCategories: {label: string; value: string}[] = []
+  if (indexFileExports) {
+    // Pulls current categories and sorts by commonality
+    const tags = taxonomy((indexFileExports as any).posts, 'tags')
+    defaultTags = Object.keys(tags)
+      .sort((a, b) => tags[b].length - tags[a].length)
+      .map((key) => ({label: key, value: key}))
+    // Pulls current categories and sorts by commonality
+    const categories = taxonomy((indexFileExports as any).posts, 'categories')
+    defaultCategories = Object.keys(categories)
+      .sort((a, b) => categories[b].length - categories[a].length)
+      .map((key) => ({label: key, value: key}))
   }
 
   render(
@@ -54,6 +73,11 @@ export async function bin(indexFile: string) {
             | {
                 type: 'continue'
               }
+            | {
+                type: 'taxonomy'
+                key: 'tags' | 'categories'
+                value: any
+              }
         ) => {
           if (action.type === 'set') {
             state = {...state, error: '', [action.key]: action.value}
@@ -65,6 +89,11 @@ export async function bin(indexFile: string) {
             state = {...state, error: action.value}
           } else if (action.type === 'continue') {
             state = {...state, error: '', step: ++state.step}
+          } else if (action.type === 'taxonomy') {
+            state = {
+              ...state,
+              [action.key]: (state[action.key] || []).concat(action.value),
+            }
           }
 
           return state
@@ -82,8 +111,6 @@ export async function bin(indexFile: string) {
 
       const steps = [
         {
-          step: 0,
-          currentStep: step,
           title: 'Title',
           value: title,
           onChange: (value: string) =>
@@ -100,8 +127,6 @@ export async function bin(indexFile: string) {
           },
         },
         {
-          step: 1,
-          currentStep: step,
           title: 'Description',
           value: description,
           direction: 'column',
@@ -119,8 +144,6 @@ export async function bin(indexFile: string) {
           },
         },
         {
-          step: 2,
-          currentStep: step,
           title: 'Slug',
           value: slug,
           onChange: (value: string) =>
@@ -133,6 +156,34 @@ export async function bin(indexFile: string) {
               })
             } else {
               dispatch({type: 'continue'})
+            }
+          },
+        },
+        {
+          component: TaxonomicStep,
+          title: 'Tags',
+          value: tags,
+          items: defaultTags.filter(({value}) => !tags.includes(value)),
+          onSubmit: (value: string) => {
+            if (value === '___DONE___') {
+              dispatch({type: 'continue'})
+            } else {
+              dispatch({type: 'taxonomy', key: 'tags', value})
+            }
+          },
+        },
+        {
+          component: TaxonomicStep,
+          title: 'Categories',
+          value: categories,
+          items: defaultCategories.filter(
+            ({value}) => !categories.includes(value)
+          ),
+          onSubmit: (value: string) => {
+            if (value === '___DONE___') {
+              dispatch({type: 'continue'})
+            } else {
+              dispatch({type: 'taxonomy', key: 'categories', value})
             }
           },
         },
@@ -163,9 +214,17 @@ export async function bin(indexFile: string) {
 
       return (
         <Box flexDirection='column'>
-          {steps.map((stepProps) => (
-            <Step key={stepProps.step} {...stepProps} />
-          ))}
+          {steps.map(
+            (
+              {
+                component: Component = Step,
+                ...stepProps
+              }: typeof stepProps & {component: React.ComponentType},
+              i
+            ) => (
+              <Component key={i} step={i} currentStep={step} {...stepProps} />
+            )
+          )}
 
           {!!error && <Text color='red'>{error}</Text>}
         </Box>
@@ -214,4 +273,76 @@ function Step({
       </Box>
     )
   )
+}
+
+function TaxonomicStep({
+  step,
+  currentStep,
+  title,
+  label,
+  items = [],
+  value,
+  direction = 'row',
+  onSubmit,
+}: {
+  step: number
+  currentStep: number
+  title: string
+  label?: string
+  items?: Item[]
+  value: string[]
+  direction?: 'row' | 'column'
+  onSubmit: (value: string) => void
+}) {
+  return (
+    currentStep >= step && (
+      <Box flexDirection={direction}>
+        <Box marginRight={1}>
+          <Text
+            bold
+            backgroundColor={step === currentStep ? '#4C51BF' : '#EBF4FF'}
+            color={step === currentStep ? '#EBF4FF' : '#3C366B'}
+          >
+            {` ${title} `}
+          </Text>
+        </Box>
+
+        <Box flexDirection='column' marginBottom={1}>
+          {currentStep >= step && value.length > 0 && (
+            <Text bold>{value.join(', ')}</Text>
+          )}
+          {currentStep === step && (
+            <Box marginTop={value.length > 0 ? 1 : 0}>
+              <QuickSearch
+                label={label || `Select ${title.toLowerCase()}`}
+                items={[
+                  {
+                    value: '___DONE___',
+                    label: value.length === 0 ? 'Skip' : 'Done',
+                  },
+                  ...items,
+                ]}
+                forceMatchingQuery={false}
+                onSelect={(item: any) => onSubmit(item.value)}
+              />
+            </Box>
+          )}
+        </Box>
+      </Box>
+    )
+  )
+}
+
+export function taxonomy<T extends Record<string, any>>(
+  posts: T[],
+  type: string
+) {
+  return Object.values(posts).reduce((acc, post) => {
+    for (const item of post.metadata[type] || []) {
+      acc[item] = acc[item] || []
+      acc[item].push(post)
+    }
+
+    return acc
+  }, {} as Record<string, T[]>)
 }

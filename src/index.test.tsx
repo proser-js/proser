@@ -4,7 +4,10 @@ import {
   usePaginate,
   useOrder,
   useTag,
+  useTags,
   useCategory,
+  useCategories,
+  useTaxonomies,
   useRelatedPosts,
 } from './index'
 
@@ -301,5 +304,57 @@ describe('useRelatedPosts()', () => {
     )
 
     expect(result.current).toEqual([posts[2], posts[1]])
+  })
+})
+
+describe('useTags()', () => {
+  it('should pass', () => {
+    const {result} = renderHook(() =>
+      useTags(defaultPosts, ([, a], [, b]) => b.length - a.length)
+    )
+
+    expect(result.current).toEqual({
+      mouse: [defaultPosts[0], defaultPosts[1]],
+      cat: [defaultPosts[0]],
+      dog: [defaultPosts[1]],
+      oatmeal: [defaultPosts[2]],
+      sushi: [defaultPosts[2]],
+    })
+
+    expect(Object.keys(result.current)).toEqual([
+      'mouse',
+      'cat',
+      'dog',
+      'oatmeal',
+      'sushi',
+    ])
+  })
+})
+
+describe('useCategories()', () => {
+  it('should pass', () => {
+    const {result} = renderHook(() =>
+      useCategories(defaultPosts, ([, a], [, b]) => b.length - a.length)
+    )
+
+    expect(result.current).toEqual({
+      animals: [defaultPosts[0], defaultPosts[1]],
+      food: [defaultPosts[2]],
+    })
+
+    expect(Object.keys(result.current)).toEqual(['animals', 'food'])
+  })
+})
+
+describe('useTaxonomies()', () => {
+  it('should slugify', () => {
+    const data = {id: 0, metadata: {tags: ['foo Bar']}}
+    const {result} = renderHook(() => useTaxonomies([data], 'tags'))
+
+    expect(result.current).toEqual({
+      'foo-bar': [data],
+    })
+
+    expect(Object.keys(result.current)).toEqual(['foo-bar'])
   })
 })

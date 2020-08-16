@@ -12,17 +12,18 @@ const argv = minimist(process.argv.slice(2))
 const root = findRoot(process.cwd())
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkgJson = require(root + '/package.json')
-const indexFile =
-  argv.index ||
-  pkgJson.proser.index ||
-  path.join(
-    argv.cwd
-      ? path.isAbsolute(argv.cwd)
-        ? argv.cwd
-        : path.join(process.cwd(), argv.cwd)
-      : root,
-    'src/pages/posts/index.js'
-  )
+const indexFile = argv.index
+  ? path.resolve(process.cwd(), argv.index)
+  : pkgJson.proser.index
+  ? path.resolve(process.cwd(), pkgJson.proser.index)
+  : path.join(
+      argv.cwd
+        ? path.isAbsolute(argv.cwd)
+          ? argv.cwd
+          : path.join(process.cwd(), argv.cwd)
+        : root,
+      'src/pages/posts/index.js'
+    )
 
 switch (argv._[0]) {
   case 'build':

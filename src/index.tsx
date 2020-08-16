@@ -1,6 +1,7 @@
 import React from 'react'
 import useChange from '@react-hook/change'
 import {orderBy} from 'natural-orderby'
+import baseSlugify from 'slugify'
 
 export function usePaginate<T>(posts: T[], options: UsePaginateOptions = {}) {
   const [page, setPage] = React.useState(
@@ -69,19 +70,50 @@ export function useTaxonomy<T extends PostLike>(
   type: string,
   key: string
 ) {
-  return React.useMemo(() => taxonomy(posts, type)[key] || [], [
+  return React.useMemo(() => taxonomy(posts, type)[slugify(key)] || [], [
     posts,
     type,
     key,
   ])
 }
 
+export function useTaxonomies<T extends PostLike>(
+  posts: T[],
+  type: string,
+  sortFn?: (a: [string, T[]], b: [string, T[]]) => number
+) {
+  return React.useMemo(() => {
+    const t = taxonomy(posts, type)
+    if (!sortFn) return t
+    return Object.keys(t)
+      .sort((a, b) => sortFn([a, t[a]], [b, t[b]]))
+      .reduce((acc, key) => {
+        acc[key] = t[key]
+        return acc
+      }, {} as Record<string, T[]>)
+  }, [posts, type, sortFn])
+}
+
 export function useTag<T extends PostLike>(posts: T[], tag: string) {
   return useTaxonomy(posts, 'tags', tag)
 }
 
+export function useTags<T extends PostLike>(
+  posts: T[],
+  sortFn?: (a: [string, T[]], b: [string, T[]]) => number
+) {
+  return useTaxonomies(posts, 'tags', sortFn)
+}
+
 export function useCategory<T extends PostLike>(posts: T[], category: string) {
   return useTaxonomy(posts, 'categories', category)
+}
+
+export function useCategories<T extends PostLike>(
+  posts: T[],
+  sortFn?: (a: [string, T[]], b: [string, T[]]) => number
+) {
+  return useTaxonomies(posts, 'categories', sortFn)
 }
 
 /**
@@ -116,7 +148,8 @@ export function useRelatedPosts<T extends PostLike>(
         ? postTaxonomy
         : [postTaxonomy]
 
-      for (const value of matchable) {
+      for (let value of matchable) {
+        value = slugify(value)
         const taxPosts = taxonomyMap[value]
 
         for (let i = 0; i < taxPosts.length; i++) {
@@ -137,13 +170,18 @@ export function useRelatedPosts<T extends PostLike>(
 
 export function taxonomy<T extends PostLike>(posts: T[], type: string) {
   return Object.values(posts).reduce((acc, post) => {
-    for (const item of post.metadata[type] || []) {
+    for (let item of post.metadata[type] || []) {
+      item = slugify(item)
       acc[item] = acc[item] || []
       acc[item].push(post)
     }
 
     return acc
   }, {} as Record<string, T[]>)
+}
+
+export function slugify(value: string) {
+  return baseSlugify(value, {lower: true, strict: true})
 }
 
 function noop() {}

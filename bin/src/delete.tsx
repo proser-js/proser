@@ -3,12 +3,10 @@ import {promisify} from 'util'
 import glob_ from 'glob'
 import React from 'react'
 import {render, Box, Text} from 'ink'
-import TextInput from 'ink-text-input'
-import {QuickSearch} from 'ink-quicksearch-input'
-import type {IsSelected} from 'ink-quicksearch-input'
-import yn from 'yn'
 import {bin as buildBin} from './build'
 import {deletePost} from './utils'
+import {ConfirmInput} from './components/confirm-input'
+import {QuickSearch} from './components/quick-search-input'
 
 const glob = promisify(glob_)
 
@@ -44,6 +42,7 @@ export async function bin(indexFile: string, argv: {slug?: string} = {}) {
             setError(`A slug matching "${argv.slug}" was not found.`)
           }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
 
       React.useEffect(() => {
@@ -55,14 +54,7 @@ export async function bin(indexFile: string, argv: {slug?: string} = {}) {
       return (
         <Box flexDirection='column'>
           {!result && (
-            <QuickSearch
-              items={slugs}
-              onSelect={(item) => setResult(item)}
-              indicatorComponent={IndicatorComponent}
-              itemComponent={ItemComponent}
-              highlightComponent={HighlightComponent}
-              statusComponent={StatusComponent}
-            />
+            <QuickSearch items={slugs} onSelect={(item) => setResult(item)} />
           )}
 
           {result && confirmed === undefined && (
@@ -99,70 +91,4 @@ export async function bin(indexFile: string, argv: {slug?: string} = {}) {
       )
     })
   )
-}
-
-// For the following four, whitespace is important
-const IndicatorComponent: React.FC<IsSelected> = ({isSelected}) => {
-  return (
-    <Text backgroundColor={isSelected ? '#4C51BF' : undefined} color='#EBF4FF'>
-      {isSelected ? ' ▶ ' : '   '}
-    </Text>
-  )
-}
-
-const ItemComponent: React.FC<IsSelected> = ({isSelected, children}) => (
-  <Text backgroundColor={isSelected ? '#4C51BF' : ''} color='#EBF4FF'>
-    {children}
-  </Text>
-)
-
-const HighlightComponent: React.FC = ({children}) => (
-  <Text backgroundColor='#6C71C4'>{children}</Text>
-)
-
-export interface StatusProps {
-  hasMatch: boolean
-  label?: string
-}
-
-const StatusComponent: React.FC<StatusProps> = ({
-  // hasMatch,
-  children,
-  label,
-}) => (
-  <Text>
-    {`${label || 'Select a post'}: `}
-    <Text color={'#74BEFF'}>{children}</Text>
-  </Text>
-)
-
-const ConfirmInput = ({
-  defaultYn = false,
-  placeholder = 'No',
-  onSubmit = () => {},
-}: ConfirmInputProps) => {
-  const [value, setValue] = React.useState<string>('')
-
-  return (
-    <TextInput
-      placeholder={placeholder}
-      value={value}
-      onChange={setValue}
-      onSubmit={(value) => {
-        onSubmit(yn(value, {default: defaultYn}))
-      }}
-    />
-  )
-}
-
-interface ConfirmInputProps {
-  /**
-   * @default false
-   */
-  defaultYn?: boolean
-  /**
-   * @default n
-   */
-  placeholder?: string
-  onSubmit?: (value: boolean) => any
 }

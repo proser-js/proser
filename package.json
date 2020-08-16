@@ -167,14 +167,18 @@
     "chokidar": "^3.4.2",
     "find-root": "^1.1.0",
     "glob": "^7.1.6",
+    "has-ansi": "^4.0.0",
     "ink": "^3.0.3",
     "ink-quicksearch-input": "^1.0.0",
     "ink-text-input": "^4.0.0",
+    "keypress": "^0.2.1",
     "lodash.debounce": "^4.0.8",
+    "lodash.isequal": "^4.5.0",
     "minimist": "^1.2.5",
     "natural-orderby": "^2.0.3",
     "open-editor": "^2.0.1",
     "slugify": "^1.4.5",
+    "temp": "^0.9.1",
     "yn": "^4.0.0"
   },
   "peerDependencies": {

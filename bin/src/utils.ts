@@ -1,4 +1,6 @@
 import path from 'path'
+import {runInThisContext} from 'vm'
+import Module from 'module'
 import {promises as fs, existsSync} from 'fs'
 import * as types from 'babel-types'
 import {createCompiler} from '@mdx-js/mdx'
@@ -298,5 +300,57 @@ export async function writePost(
 export async function deletePost(filepath: string) {
   if (existsSync(filepath)) {
     await fs.unlink(filepath)
+  }
+}
+
+export async function importIndexFile(indexFile: string) {
+  let indexFileContents = ''
+
+  if (existsSync(indexFile)) {
+    indexFileContents = await fs.readFile(indexFile, 'utf-8')
+  } else {
+    return
+  }
+
+  try {
+    // Allows ES6 lundle configs
+    const t = await transformAsync(indexFileContents, {
+      filename: indexFile,
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            modules: 'commonjs',
+            targets: {
+              node: 'current',
+            },
+          },
+        ],
+      ],
+      plugins: [],
+    })
+    // Run this in a VM context for safer eval
+    const wrapper = runInThisContext(Module.wrap(t?.code || '"use strict"'), {
+      filename: indexFile,
+    })
+
+    const exports = {}
+    const origPaths = module.paths
+    module.paths = [path.dirname(indexFile), ...module.paths]
+
+    wrapper.call(
+      exports,
+      exports,
+      require,
+      global,
+      indexFile,
+      path.dirname(indexFile)
+    )
+    // Resets module paths to originals
+    module.paths = origPaths
+    return exports
+  } catch (err) {
+    console.error(err)
+    process.exit(1)
   }
 }
