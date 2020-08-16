@@ -12,7 +12,9 @@
     "react component",
     "proser"
   ],
-  "bin": "bin/dist/index.js",
+  "bin": {
+    "proser": "bin/dist/index.js"
+  },
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "unpkg": "dist/umd/proser.js",
@@ -39,6 +41,7 @@
     "./": "./"
   },
   "files": [
+    "/bin",
     "/dist",
     "/src",
     "/types"
