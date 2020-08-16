@@ -1,6 +1,6 @@
 <hr/>
 
-# proser
+# Proser
 
 > Create a blog with React and MDX
 
@@ -33,8 +33,11 @@ npm i proser
 
 ## Quick start
 
-```js
-import _ from 'proser'
+```sh
+proser post
+proser build
+proser watch
+proser delete
 ```
 
 ## API

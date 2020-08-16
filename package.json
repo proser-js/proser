@@ -12,6 +12,7 @@
     "react component",
     "proser"
   ],
+  "bin": "bin/dist/index.js",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "unpkg": "dist/umd/proser.js",
@@ -27,6 +28,13 @@
       "types": "./types/index.d.ts",
       "default": "./dist/main/index.js"
     },
+    "./bin": {
+      "import": "./bin/dist/esm/index.mjs",
+      "require": "./bin/dist/main/index.js",
+      "source": "./bin/src/index.tsx",
+      "types": "./bin/types/index.d.ts",
+      "default": "./bin/dist/main/index.js"
+    },
     "./package.json": "./package.json",
     "./": "./"
   },
@@ -37,6 +45,7 @@
   ],
   "sideEffects": false,
   "scripts": {
+    "proser": "lundle build -e ./bin -f cjs && node bin/dist/main/index.js",
     "build": "lundle build",
     "check-types": "lundle check-types",
     "dev": "lundle build -f module,cjs -w",
@@ -112,6 +121,9 @@
     "jsxSingleQuote": true,
     "bracketSpacing": false
   },
+  "proser": {
+    "index": "test/__fixtures__/posts/index.js"
+  },
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
@@ -131,15 +143,35 @@
     "jest": "latest",
     "lint-staged": "latest",
     "lundle": "latest",
-    "prettier": "latest",
+    "prettier": "^2.0.5",
     "react": "latest",
     "react-dom": "latest",
     "react-test-renderer": "latest",
     "standard-version": "latest",
     "typescript": "latest"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/generator": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@babel/template": "^7.10.4",
+    "@inst-cli/template": "^1.0.0",
+    "@mdx-js/mdx": "^1.6.16",
+    "@types/glob": "^7.1.3",
+    "babel-types": "^6.26.0",
+    "chokidar": "^3.4.2",
+    "find-root": "^1.1.0",
+    "glob": "^7.1.6",
+    "ink": "^3.0.3",
+    "ink-text-input": "^4.0.0",
+    "lodash.debounce": "^4.0.8",
+    "minimist": "^1.2.5",
+    "open-editor": "^2.0.1",
+    "slugify": "^1.4.5"
+  },
   "peerDependencies": {
+    "prettier": "^2.0.5",
     "react": ">=16.8"
   }
 }
