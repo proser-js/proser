@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/jaredLunde/proser/compare/v0.1.1...v0.1.2) (2020-08-16)
+
+### Bug Fixes
+
+- **package.json:** fix "bin" field ([9446a79](https://github.com/jaredLunde/proser/commit/9446a79983f9392c048e49893a13f7fe5b5274f4))
+
 ### [0.1.1](https://github.com/jaredLunde/proser/compare/v0.1.0...v0.1.1) (2020-08-16)
 
 ### Bug Fixes
