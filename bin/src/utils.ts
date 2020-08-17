@@ -287,9 +287,6 @@ export async function writePost(
   }
 ) {
   const {metadata, template = DEFAULT_MDX_TEMPLATE} = options
-  metadata.fish = function fish() {
-    return 'Hello fish'
-  }
   const placeholders = []
   let stringified = JSON.stringify(
     metadata,
