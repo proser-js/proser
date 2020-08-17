@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/jaredLunde/proser/compare/v0.1.6...v0.1.7) (2020-08-17)
+
+### Bug Fixes
+
+- fix Post type ([dd0fc4e](https://github.com/jaredLunde/proser/commit/dd0fc4e8bf5d7e7321a52413bccad568c2f481d8))
+
 ### [0.1.6](https://github.com/jaredLunde/proser/compare/v0.1.4...v0.1.6) (2020-08-16)
 
 ### Features
