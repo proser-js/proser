@@ -31,7 +31,7 @@ export async function bin(indexFile: string) {
   let defaultCategories: {label: string; value: string}[] = []
   if (indexFileExports) {
     // Pulls current categories and sorts by commonality
-    const tags = taxonomy((indexFileExports as any).posts, 'tags')
+    const tags = taxonomy((indexFileExports as any).postsMap, 'tags')
     defaultTags = Object.keys(tags)
       .sort((a, b) => tags[b].length - tags[a].length)
       .map((key) => ({label: key, value: key}))

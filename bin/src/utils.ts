@@ -18,28 +18,37 @@ const DEFAULT_POSTS_CONTENTS = `/**
  */
 import React from 'react'
 
-export const posts = {}
+export const postsMap = {}
+
+export const posts = Object.values(postsMap)
+export const postsMapById = posts.reduce((acc, post) => {
+  acc[post.id] = post
+  return acc
+}, {})
 `
 
 const POST_TYPES = `/** 
  * 🔆 You can and should edit this file to match your actual Post type.
  *    if you're using extra or different metadata.
  */
-import React from 'react'
+import React from 'react';
 
 export type Post = {
-  id: number
-  component: React.LazyExoticComponent<(props: any) => JSX.Element>
+  id: number;
+  slug: string;
+  component: React.LazyExoticComponent<(props: any) => JSX.Element>;
   metadata: {
-    title: string
-    description: string
-    // image?: Promise<typeof import('*.jpg')>
-    categories: string[]
-    tags: string[]
+    title: string;
+    description: string;
+    // image?: Promise<typeof import('*.jpg')>;
+    categories: string[];
+    tags: string[];
   }
 }
 
-export const posts: Record<string, Post>
+export const postsMap: Record<string, Post>;
+export const postsMapById: Record<number, Post>;
+export const posts: Post[];
 `
 
 export async function writePosts(
@@ -118,7 +127,7 @@ export async function writePosts(
               // so we can bail if it isn't here.
               const postsDeclarator = (
                 nodePath.node.declaration.declarations || []
-              ).find((declarator) => declarator.id.name === 'posts')
+              ).find((declarator) => declarator.id.name === 'postsMap')
               if (!postsDeclarator) return
 
               const currentPosts = postsDeclarator.init.properties
@@ -162,6 +171,10 @@ export async function writePosts(
                   t.objectProperty(
                     t.stringLiteral('id'),
                     t.numericLiteral(nextPost.id)
+                  ),
+                  t.objectProperty(
+                    t.stringLiteral('slug'),
+                    t.stringLiteral(nextPost.slug)
                   )
                 )
                 nextProperties.push(
@@ -185,6 +198,10 @@ export async function writePosts(
                       t.objectProperty(
                         t.stringLiteral('id'),
                         t.numericLiteral(data.id)
+                      ),
+                      t.objectProperty(
+                        t.stringLiteral('slug'),
+                        t.stringLiteral(data.slug)
                       ),
                       t.objectProperty(
                         t.stringLiteral('component'),
@@ -222,7 +239,10 @@ export async function writePosts(
   const declarationFile = indexFile.replace(path.extname(indexFile), '.d.ts')
 
   if (!existsSync(declarationFile)) {
-    await fs.writeFile(declarationFile, POST_TYPES)
+    await fs.writeFile(
+      declarationFile,
+      prettier.format(POST_TYPES, {parser: 'typescript', ...options})
+    )
   }
 }
 

@@ -6,9 +6,10 @@
  */
 import React from 'react'
 
-export const posts = {
+export const postsMap = {
   'whoa-whoa-whoa': {
     id: 0,
+    slug: 'whoa-whoa-whoa',
 
     component: /*#__PURE__*/ React.lazy(() => import('./0-whoa-whoa-whoa.mdx')),
     metadata: {
@@ -21,29 +22,39 @@ export const posts = {
     testing12: {34: 56},
   },
 
-  'another-post': {
-    id: 2,
-
-    component: /*#__PURE__*/ React.lazy(() => import('./2-another-post.mdx')),
-    metadata: {
-      timestamp: 1597553898221,
-      title: 'Another post',
-      description: 'Yet another post',
-      tags: [],
-      categories: [],
-    },
-  },
-
   'fix-that-bug': {
     id: 3,
+    slug: 'fix-that-bug',
 
     component: /*#__PURE__*/ React.lazy(() => import('./3-fix-that-bug.mdx')),
     metadata: {
       title: 'Fix that bug',
       description: 'Does it fix the bug?',
       timestamp: 1597556571967,
-      tags: [],
+      tags: ['by', 'any', 'means', 'i', 'will', 'fight'],
       categories: [],
     },
   },
+
+  'hopefully-this-still-works': {
+    id: 4,
+    slug: 'hopefully-this-still-works',
+
+    component: /*#__PURE__*/ React.lazy(() =>
+      import('./4-hopefully-this-still-works.mdx')
+    ),
+    metadata: {
+      title: 'Hopefully this still works',
+      description: 'It seems to',
+      timestamp: 1597627884455,
+      tags: ['test'],
+      categories: ['misc'],
+    },
+  },
 }
+
+export const posts = Object.values(postsMap)
+export const postsMapById = posts.reduce((acc, post) => {
+  acc[post.id] = post
+  return acc
+}, {})

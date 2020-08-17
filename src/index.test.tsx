@@ -14,6 +14,7 @@ import {
 const defaultPosts = [
   {
     id: 0,
+    slug: 'hello-cats',
     metadata: {
       title: 'Hello cats',
       tags: ['cat', 'mouse'],
@@ -23,6 +24,7 @@ const defaultPosts = [
   },
   {
     id: 1,
+    slug: 'hello-dogs',
     metadata: {
       title: 'Hello dogs',
       tags: ['dog', 'mouse'],
@@ -32,6 +34,7 @@ const defaultPosts = [
   },
   {
     id: 2,
+    slug: 'hello-food',
     metadata: {
       title: 'Hello food',
       tags: ['oatmeal', 'sushi'],
@@ -164,35 +167,35 @@ describe('useOrder()', () => {
 
 describe('useTag()', () => {
   it('should pass', () => {
-    const {result} = renderHook(() => useTag(defaultPosts, 'cat'))
-    expect(result.current).toEqual([defaultPosts[0]])
+    const {result} = renderHook(() => useTag(defaultPosts, 'Cat'))
+    expect(result.current.posts).toEqual([defaultPosts[0]])
   })
 
   it('should also pass', () => {
     const {result} = renderHook(() => useTag(defaultPosts, 'mouse'))
-    expect(result.current).toEqual([defaultPosts[0], defaultPosts[1]])
+    expect(result.current.posts).toEqual([defaultPosts[0], defaultPosts[1]])
   })
 
   it('should return empty if not found', () => {
     const {result} = renderHook(() => useTag(defaultPosts, 'quetzalcoatl'))
-    expect(result.current).toEqual([])
+    expect(result.current.posts).toEqual([])
   })
 })
 
 describe('useCategory()', () => {
   it('should pass', () => {
     const {result} = renderHook(() => useCategory(defaultPosts, 'animals'))
-    expect(result.current).toEqual([defaultPosts[0], defaultPosts[1]])
+    expect(result.current.posts).toEqual([defaultPosts[0], defaultPosts[1]])
   })
 
   it('should also pass', () => {
     const {result} = renderHook(() => useCategory(defaultPosts, 'food'))
-    expect(result.current).toEqual([defaultPosts[2]])
+    expect(result.current.posts).toEqual([defaultPosts[2]])
   })
 
   it('should return empty if not found', () => {
     const {result} = renderHook(() => useCategory(defaultPosts, 'quetzalcoatl'))
-    expect(result.current).toEqual([])
+    expect(result.current.posts).toEqual([])
   })
 })
 
@@ -209,6 +212,7 @@ describe('useRelatedPosts()', () => {
     const posts = [
       {
         id: 0,
+        slug: 'hello-cats',
         metadata: {
           title: 'Hello cats',
           tags: ['cat', 'mouse'],
@@ -218,6 +222,7 @@ describe('useRelatedPosts()', () => {
       },
       {
         id: 1,
+        slug: 'hello-dogs',
         metadata: {
           title: 'Hello dogs',
           tags: ['dog', 'bird'],
@@ -227,6 +232,7 @@ describe('useRelatedPosts()', () => {
       },
       {
         id: 2,
+        slug: 'hello-food',
         metadata: {
           title: 'Hello food',
           tags: ['oatmeal', 'cat'],
@@ -264,6 +270,7 @@ describe('useRelatedPosts()', () => {
     const posts = [
       {
         id: 0,
+        slug: 'hello-cats',
         metadata: {
           title: 'Hello cats',
           tags: ['cat', 'mouse', 'fish'],
@@ -273,6 +280,7 @@ describe('useRelatedPosts()', () => {
       },
       {
         id: 1,
+        slug: 'hello-dogs',
         metadata: {
           title: 'Hello dogs',
           tags: ['dog', 'pet'],
@@ -282,6 +290,7 @@ describe('useRelatedPosts()', () => {
       },
       {
         id: 2,
+        slug: 'hello-food',
         metadata: {
           title: 'Hello food',
           tags: ['mouse', 'cat', 'fish'],
@@ -310,23 +319,15 @@ describe('useRelatedPosts()', () => {
 describe('useTags()', () => {
   it('should pass', () => {
     const {result} = renderHook(() =>
-      useTags(defaultPosts, ([, a], [, b]) => b.length - a.length)
+      useTags(defaultPosts, (a, b) => b.posts.length - a.posts.length)
     )
 
-    expect(result.current).toEqual({
-      mouse: [defaultPosts[0], defaultPosts[1]],
-      cat: [defaultPosts[0]],
-      dog: [defaultPosts[1]],
-      oatmeal: [defaultPosts[2]],
-      sushi: [defaultPosts[2]],
-    })
-
-    expect(Object.keys(result.current)).toEqual([
-      'mouse',
-      'cat',
-      'dog',
-      'oatmeal',
-      'sushi',
+    expect(result.current).toEqual([
+      {slug: 'mouse', posts: [defaultPosts[0], defaultPosts[1]]},
+      {slug: 'cat', posts: [defaultPosts[0]]},
+      {slug: 'dog', posts: [defaultPosts[1]]},
+      {slug: 'oatmeal', posts: [defaultPosts[2]]},
+      {slug: 'sushi', posts: [defaultPosts[2]]},
     ])
   })
 })
@@ -334,27 +335,26 @@ describe('useTags()', () => {
 describe('useCategories()', () => {
   it('should pass', () => {
     const {result} = renderHook(() =>
-      useCategories(defaultPosts, ([, a], [, b]) => b.length - a.length)
+      useCategories(defaultPosts, (a, b) => b.posts.length - a.posts.length)
     )
 
-    expect(result.current).toEqual({
-      animals: [defaultPosts[0], defaultPosts[1]],
-      food: [defaultPosts[2]],
-    })
-
-    expect(Object.keys(result.current)).toEqual(['animals', 'food'])
+    expect(result.current).toEqual([
+      {slug: 'animals', posts: [defaultPosts[0], defaultPosts[1]]},
+      {slug: 'food', posts: [defaultPosts[2]]},
+    ])
   })
 })
 
 describe('useTaxonomies()', () => {
   it('should slugify', () => {
-    const data = {id: 0, metadata: {tags: ['foo Bar']}}
+    const data = {id: 0, slug: 'foo-bar', metadata: {tags: ['foo Bar']}}
     const {result} = renderHook(() => useTaxonomies([data], 'tags'))
 
-    expect(result.current).toEqual({
-      'foo-bar': [data],
-    })
-
-    expect(Object.keys(result.current)).toEqual(['foo-bar'])
+    expect(result.current).toEqual([
+      {
+        slug: 'foo-bar',
+        posts: [data],
+      },
+    ])
   })
 })

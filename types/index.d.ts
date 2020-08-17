@@ -34,25 +34,73 @@ export declare function useTaxonomy<T extends PostLike>(
   posts: T[],
   type: string,
   key: string
-): T[]
+): {
+  slug: string
+  posts: T[]
+}
 export declare function useTaxonomies<T extends PostLike>(
   posts: T[],
   type: string,
-  sortFn?: (a: [string, T[]], b: [string, T[]]) => number
-): Record<string, T[]>
-export declare function useTag<T extends PostLike>(posts: T[], tag: string): T[]
+  sortFn?: (
+    a: {
+      slug: string
+      posts: T[]
+    },
+    b: {
+      slug: string
+      posts: T[]
+    }
+  ) => number
+): {
+  slug: string
+  posts: T[]
+}[]
+export declare function useTag<T extends PostLike>(
+  posts: T[],
+  tag: string
+): {
+  slug: string
+  posts: T[]
+}
 export declare function useTags<T extends PostLike>(
   posts: T[],
-  sortFn?: (a: [string, T[]], b: [string, T[]]) => number
-): Record<string, T[]>
+  sortFn?: (
+    a: {
+      slug: string
+      posts: T[]
+    },
+    b: {
+      slug: string
+      posts: T[]
+    }
+  ) => number
+): {
+  slug: string
+  posts: T[]
+}[]
 export declare function useCategory<T extends PostLike>(
   posts: T[],
   category: string
-): T[]
+): {
+  slug: string
+  posts: T[]
+}
 export declare function useCategories<T extends PostLike>(
   posts: T[],
-  sortFn?: (a: [string, T[]], b: [string, T[]]) => number
-): Record<string, T[]>
+  sortFn?: (
+    a: {
+      slug: string
+      posts: T[]
+    },
+    b: {
+      slug: string
+      posts: T[]
+    }
+  ) => number
+): {
+  slug: string
+  posts: T[]
+}[]
 /**
  *
  * @param posts
@@ -71,9 +119,13 @@ export declare function useRelatedPosts<T extends PostLike>(
 export declare function taxonomy<T extends PostLike>(
   posts: T[],
   type: string
-): Record<string, T[]>
+): {
+  slug: string
+  posts: T[]
+}[]
 export declare function slugify(value: string): string
 export interface PostLike {
   id: number
+  slug: string
   metadata: Record<string, any>
 }

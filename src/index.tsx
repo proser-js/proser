@@ -70,27 +70,29 @@ export function useTaxonomy<T extends PostLike>(
   type: string,
   key: string
 ) {
-  return React.useMemo(() => taxonomy(posts, type)[slugify(key)] || [], [
-    posts,
-    type,
-    key,
-  ])
+  return React.useMemo(() => {
+    const slug = slugify(key)
+    return (
+      taxonomy(posts, type).find((data) => data.slug === slug) || {
+        slug,
+        posts: [],
+      }
+    )
+  }, [posts, type, key])
 }
 
 export function useTaxonomies<T extends PostLike>(
   posts: T[],
   type: string,
-  sortFn?: (a: [string, T[]], b: [string, T[]]) => number
+  sortFn?: (
+    a: {slug: string; posts: T[]},
+    b: {slug: string; posts: T[]}
+  ) => number
 ) {
   return React.useMemo(() => {
     const t = taxonomy(posts, type)
     if (!sortFn) return t
-    return Object.keys(t)
-      .sort((a, b) => sortFn([a, t[a]], [b, t[b]]))
-      .reduce((acc, key) => {
-        acc[key] = t[key]
-        return acc
-      }, {} as Record<string, T[]>)
+    return t.sort((a, b) => sortFn(a, b))
   }, [posts, type, sortFn])
 }
 
@@ -100,7 +102,10 @@ export function useTag<T extends PostLike>(posts: T[], tag: string) {
 
 export function useTags<T extends PostLike>(
   posts: T[],
-  sortFn?: (a: [string, T[]], b: [string, T[]]) => number
+  sortFn?: (
+    a: {slug: string; posts: T[]},
+    b: {slug: string; posts: T[]}
+  ) => number
 ) {
   return useTaxonomies(posts, 'tags', sortFn)
 }
@@ -111,7 +116,10 @@ export function useCategory<T extends PostLike>(posts: T[], category: string) {
 
 export function useCategories<T extends PostLike>(
   posts: T[],
-  sortFn?: (a: [string, T[]], b: [string, T[]]) => number
+  sortFn?: (
+    a: {slug: string; posts: T[]},
+    b: {slug: string; posts: T[]}
+  ) => number
 ) {
   return useTaxonomies(posts, 'categories', sortFn)
 }
@@ -134,7 +142,10 @@ export function useRelatedPosts<T extends PostLike>(
   return React.useMemo(() => {
     const weightKeys = Object.keys(weight)
     const taxonomies = weightKeys.reduce((acc, key) => {
-      acc[key] = taxonomy(posts, key)
+      acc[key] = taxonomy(posts, key).reduce((ps, t) => {
+        ps[t.slug] = t.posts
+        return ps
+      }, {} as Record<string, T[]>)
       return acc
     }, {} as Record<string, Record<string, T[]>>)
     const weights = new Map<T, number>()
@@ -169,7 +180,7 @@ export function useRelatedPosts<T extends PostLike>(
 }
 
 export function taxonomy<T extends PostLike>(posts: T[], type: string) {
-  return Object.values(posts).reduce((acc, post) => {
+  const initial = Object.values(posts).reduce((acc, post) => {
     for (let item of post.metadata[type] || []) {
       item = slugify(item)
       acc[item] = acc[item] || []
@@ -178,6 +189,11 @@ export function taxonomy<T extends PostLike>(posts: T[], type: string) {
 
     return acc
   }, {} as Record<string, T[]>)
+
+  return Object.keys(initial).map((key) => ({
+    slug: key,
+    posts: initial[key],
+  }))
 }
 
 export function slugify(value: string) {
@@ -188,5 +204,6 @@ function noop() {}
 
 export interface PostLike {
   id: number
+  slug: string
   metadata: Record<string, any>
 }
