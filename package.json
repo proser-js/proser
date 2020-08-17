@@ -157,7 +157,6 @@
     "@babel/generator": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@babel/template": "^7.10.4",
     "@inst-cli/template": "^1.0.0",
     "@mdx-js/mdx": "^1.6.16",
     "@react-hook/change": "^1.0.0",

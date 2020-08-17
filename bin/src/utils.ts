@@ -4,10 +4,9 @@ import Module from 'module'
 import {promises as fs, existsSync} from 'fs'
 import * as types from 'babel-types'
 import {createCompiler} from '@mdx-js/mdx'
-import babelTemplate from '@babel/template'
 import instTemplate from '@inst-cli/template'
 import generate from '@babel/generator'
-import {transformAsync, parseAsync} from '@babel/core'
+import {transformAsync, parseAsync, parse} from '@babel/core'
 import prettier from 'prettier'
 
 const DEFAULT_POSTS_CONTENTS = `/**
@@ -271,7 +270,7 @@ export async function readMetadata(filepath: string) {
   return mdxExports
 }
 
-const DEFAULT_MDX_TEMPLATE = `export const metadata = {{metadata}}
+const DEFAULT_MDX_TEMPLATE = `{{metadata}}
 
 # {{title}}
 
@@ -281,24 +280,48 @@ const DEFAULT_MDX_TEMPLATE = `export const metadata = {{metadata}}
 export async function writePost(
   filepath: string,
   options: {
-    metadata: Record<string, number | string | (number | string)[]>
+    metadata: Record<string, unknown | unknown[]>
     template?: string
   } = {
     metadata: {},
   }
 ) {
   const {metadata, template = DEFAULT_MDX_TEMPLATE} = options
+  metadata.fish = function fish() {
+    return 'Hello fish'
+  }
+  const placeholders = []
+  let stringified = JSON.stringify(
+    metadata,
+    function (_, val) {
+      if (
+        typeof val?.toString === 'function' &&
+        val.toString() !== '[object Object]' &&
+        typeof val !== 'string' &&
+        typeof val !== 'number' &&
+        typeof val !== 'boolean' &&
+        !Array.isArray(val)
+      ) {
+        const placeholder = `[<::${placeholders.length}::>`
+        placeholders.push([placeholder, val.toString()])
+        return placeholder
+      }
+
+      return val
+    },
+    2
+  )
+  placeholders.forEach(
+    ([placeholder, value]) =>
+      (stringified = stringified.replace(`"${placeholder}"`, value))
+  )
+
   const metadataAst = generate(
-    babelTemplate('SOURCE')({
-      SOURCE: types.objectExpression([
-        ...Object.keys(metadata).map((key) => {
-          const value = metadata[key]
-          return types.objectProperty(
-            types.stringLiteral(key),
-            (babelTemplate.smart(JSON.stringify(value))() as any).expression
-          )
-        }),
-      ]),
+    parse(`export const metadata = ${stringified}`, {
+      filename: filepath,
+      babelrc: false,
+      configFile: false,
+      babelrcRoots: false,
     }) as any
   ).code
   const tpl = instTemplate(template, {vars: /{{([\s\w.]+?)}}/g})

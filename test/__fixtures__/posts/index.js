@@ -35,22 +35,6 @@ export const postsMap = {
       categories: [],
     },
   },
-
-  'hopefully-this-still-works': {
-    id: 4,
-    slug: 'hopefully-this-still-works',
-
-    component: /*#__PURE__*/ React.lazy(() =>
-      import('./4-hopefully-this-still-works.mdx')
-    ),
-    metadata: {
-      title: 'Hopefully this still works',
-      description: 'It seems to',
-      timestamp: 1597627884455,
-      tags: ['test'],
-      categories: ['misc'],
-    },
-  },
 }
 
 export const posts = Object.values(postsMap)
