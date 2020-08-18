@@ -45,7 +45,11 @@ let configs: Record<string, ProserConfig> = argv.root
     }, {})
   : pkgJson.proser
   ? Object.keys(pkgJson.proser).reduce((acc, name) => {
-      acc[name] = pkgJson.proser[name]
+      if (pkgJson.proser.index) {
+        acc['default'] = pkgJson.proser
+      } else {
+        acc[name] = pkgJson.proser[name]
+      }
       return acc
     }, {})
   : {default: {index: 'src/posts/index.js'}}
