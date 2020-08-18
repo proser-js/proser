@@ -63,6 +63,34 @@ export const postsMap = {
       categories: [],
     },
   },
+
+  'new-post': {
+    id: 7,
+    slug: 'new-post',
+
+    component: /*#__PURE__*/ React.lazy(() => import('./7-new-post.mdx')),
+    metadata: {
+      title: 'New post',
+      description: 'Hello world',
+      timestamp: 1597760445534,
+      tags: [],
+      categories: [],
+    },
+  },
+
+  'big-time': {
+    id: 8,
+    slug: 'big-time',
+
+    component: /*#__PURE__*/ React.lazy(() => import('./8-big-time.mdx')),
+    metadata: {
+      title: 'Big time',
+      description: 'Custom template???',
+      timestamp: 1597760792498,
+      tags: [],
+      categories: [],
+    },
+  },
 }
 
 export const posts = Object.values(postsMap)

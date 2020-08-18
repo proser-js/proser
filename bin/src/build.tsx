@@ -27,7 +27,10 @@ export async function build(config: ProserConfig) {
   )
 }
 
-export async function bin(configMap: Record<string, ProserConfig>) {
+export async function bin(
+  configMap: Record<string, ProserConfig>,
+  argv: {slug?: string; [key: string]: any} = {}
+) {
   render(
     React.createElement(() => {
       const [roots, dispatch] = React.useReducer(
@@ -92,7 +95,9 @@ export async function bin(configMap: Record<string, ProserConfig>) {
                 } `}</Text>
                 <Text>
                   {' '}
-                  {error || (
+                  {error ? (
+                    <Text>{error.message}</Text>
+                  ) : (
                     <React.Fragment>
                       <Text bold>{root}</Text>{' '}
                       <Text color='gray'>

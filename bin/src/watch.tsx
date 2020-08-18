@@ -6,7 +6,10 @@ import debounce from 'lodash.debounce'
 import {build} from './build'
 import {ProserConfig} from './types'
 
-export async function watch(configMap: Record<string, ProserConfig>) {
+export async function watch(
+  configMap: Record<string, ProserConfig>,
+  argv: {slug?: string; [key: string]: any} = {}
+) {
   render(
     React.createElement(() => {
       const [roots, dispatch] = React.useReducer(

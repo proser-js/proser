@@ -79,10 +79,10 @@ configs = Object.keys(configs).reduce((acc, key) => {
 }, {})
 
 const cmd = {
-  build: () => buildBin(configs),
-  watch: () => watch(configs),
-  post: () => post(configs),
-  delete: () => del(configs, {slug: argv._[1]}),
+  build: () => buildBin(configs, argv),
+  watch: () => watch(configs, argv),
+  post: () => post(configs, argv),
+  delete: () => del(configs, {slug: argv._[1], ...argv}),
 }[argv._[0]]
 
 if (!cmd) {

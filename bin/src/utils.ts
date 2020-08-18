@@ -228,6 +228,9 @@ export async function writePosts(
 
   // Writes the JS file if it changed
   if (originalContents !== contents) {
+    const dirname = path.dirname(indexFile)
+    if (!existsSync(dirname)) await fs.mkdir(dirname, {recursive: true})
+
     await fs.writeFile(
       indexFile,
       prettier.format(contents, {parser: 'babel', ...options})
@@ -270,9 +273,7 @@ export async function readMetadata(filepath: string) {
   return mdxExports
 }
 
-const DEFAULT_MDX_TEMPLATE = `{{metadata}}
-
-# {{title}}
+const DEFAULT_MDX_TEMPLATE = `# {{title}}
 
 > {{description}}
 `
@@ -280,13 +281,27 @@ const DEFAULT_MDX_TEMPLATE = `{{metadata}}
 export async function writePost(
   filepath: string,
   options: {
-    metadata: Record<string, unknown | unknown[]>
+    metadata: Record<string, unknown>
+    argv: Record<string, unknown>
     template?: string
   } = {
     metadata: {},
+    argv: {},
   }
 ) {
-  const {metadata, template = DEFAULT_MDX_TEMPLATE} = options
+  const {metadata, argv, template: customTemplate} = options
+  let template: string = DEFAULT_MDX_TEMPLATE
+
+  if (customTemplate) {
+    if (customTemplate.endsWith('.js')) {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const templatePkg = require(customTemplate)
+      template = templatePkg(metadata, argv)
+    } else {
+      template = await fs.readFile(customTemplate, 'utf-8')
+    }
+  }
+
   const placeholders = []
   let stringified = JSON.stringify(
     metadata,
@@ -324,11 +339,11 @@ export async function writePost(
   const tpl = instTemplate(template, {vars: /{{([\s\w.]+?)}}/g})
   const prettierOptions = await prettier.resolveConfig(process.cwd())
   const contents = prettier.format(
-    tpl({
-      metadata: metadataAst,
-      title: metadata.title,
-      description: metadata.description,
-    }),
+    `${metadataAst}\n\n` +
+      tpl({
+        title: metadata.title,
+        description: metadata.description,
+      }),
     {parser: 'mdx', ...prettierOptions}
   )
 

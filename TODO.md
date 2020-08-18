@@ -5,7 +5,7 @@
   - If using multiple roots, don't let a user `post`/`delete` until they select
     the correct root.
   - `build` and `watch` should accept multiple indexes as an argument
-- [ ] Custom template paths
+- [x] Custom template paths
 - [ ] Plugin system for `build` and `post` (medium)
 - [ ] `proser.config.js` file (maybe? only if necessary for now.)
 

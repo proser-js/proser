@@ -14,7 +14,7 @@ const glob = promisify(glob_)
 
 export async function del(
   configMap: Record<string, ProserConfig>,
-  argv: {slug?: string} = {}
+  argv: {slug?: string; [key: string]: any} = {}
 ) {
   const configName = Object.keys(configMap)[0]
   const config = configMap[configName]

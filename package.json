@@ -125,10 +125,15 @@
   },
   "proser": {
     "blog": {
-      "index": "test/__fixtures__/posts/index.js"
+      "index": "test/__fixtures__/posts/index.js",
+      "template": "test/__fixtures__/template-a.md"
     },
     "recipes": {
-      "index": "test/__fixtures__/posts-backup/index.js"
+      "index": "test/__fixtures__/posts-backup/index.js",
+      "template": "test/__fixtures__/template-b.md"
+    },
+    "bookClub": {
+      "index": "test/__fixtures__/posts-book-club/index.js"
     }
   },
   "devDependencies": {
