@@ -29,9 +29,37 @@ export const postsMap = {
     component: /*#__PURE__*/ React.lazy(() => import('./3-fix-that-bug.mdx')),
     metadata: {
       title: 'Fix that bug',
-      description: 'Does it fix the bug?',
+      description: 'Does itfix the bug?',
       timestamp: 1597556571967,
       tags: ['by', 'any', 'means', 'i', 'will', 'fight'],
+      categories: [],
+    },
+  },
+
+  foo: {
+    id: 5,
+    slug: 'foo',
+
+    component: /*#__PURE__*/ React.lazy(() => import('./5-foo.mdx')),
+    metadata: {
+      title: 'Foo',
+      description: 'Bar',
+      timestamp: 1597675482481,
+      tags: ['any'],
+      categories: [],
+    },
+  },
+
+  blah: {
+    id: 6,
+    slug: 'blah',
+
+    component: /*#__PURE__*/ React.lazy(() => import('./6-blah.mdx')),
+    metadata: {
+      title: 'blah',
+      description: 'blah',
+      timestamp: 1597676103578,
+      tags: [],
       categories: [],
     },
   },

@@ -329,7 +329,7 @@ const StatusComponent: React.FC<StatusProps> = ({
 const defaultProps = {
   focus: true,
   caseSensitive: false,
-  limit: 0,
+  limit: 6,
   forceMatchingQuery: true,
   clearQueryChars: [
     '\u0015', // Ctrl + U

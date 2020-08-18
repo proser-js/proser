@@ -124,7 +124,12 @@
     "bracketSpacing": false
   },
   "proser": {
-    "index": "test/__fixtures__/posts/index.js"
+    "blog": {
+      "index": "test/__fixtures__/posts/index.js"
+    },
+    "recipes": {
+      "index": "test/__fixtures__/posts-backup/index.js"
+    }
   },
   "devDependencies": {
     "@commitlint/cli": "latest",
@@ -168,6 +173,7 @@
     "glob": "^7.1.6",
     "has-ansi": "^4.0.0",
     "ink": "^3.0.3",
+    "ink-big-text": "^1.2.0",
     "ink-quicksearch-input": "^1.0.0",
     "ink-text-input": "^4.0.0",
     "keypress": "^0.2.1",

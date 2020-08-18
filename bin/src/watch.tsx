@@ -3,53 +3,153 @@ import React from 'react'
 import chokidar from 'chokidar'
 import {Box, Text, render} from 'ink'
 import debounce from 'lodash.debounce'
-import {bin as buildBin} from './build'
+import {build} from './build'
+import {ProserConfig} from './types'
 
-export async function bin(
-  indexFile = path.join(process.cwd(), 'src/pages/posts/index.js')
-) {
+export async function watch(configMap: Record<string, ProserConfig>) {
   render(
     React.createElement(() => {
-      const [message, setMessage] = React.useState('⋯ Building')
+      const [roots, dispatch] = React.useReducer(
+        (state: WatchState, action: WatchAction) => {
+          switch (action.type) {
+            case 'status':
+              return {
+                ...state,
+                [action.root]: {
+                  status: action.value,
+                  error: 'error' in action ? action.error : undefined,
+                },
+              }
+          }
+        },
+        Object.keys(configMap).reduce((acc, key) => {
+          acc[key] = {
+            status: 'loading',
+          }
+          return acc
+        }, {})
+      )
+
+      const [message, setMessage] = React.useState('⋯ Watching')
 
       React.useEffect(() => {
-        const watcher = chokidar.watch(['**/*.mdx'], {
-          cwd: path.dirname(indexFile),
-          depth: 99,
-          persistent: true,
-          awaitWriteFinish: true,
-          ignoreInitial: true,
-        })
-        watcher.on('ready', () =>
-          buildBin(indexFile).then(() => setMessage('Built'))
-        )
-        const rebuilding = debounce(() => {
-          setMessage('⋯ Rebuilding')
-          buildBin(indexFile).then(() => setMessage('Rebuilt'))
-        }, 500) as any
-        watcher.on('add', rebuilding)
-        watcher.on('change', rebuilding)
-        watcher.on('unlink', rebuilding)
+        for (const root in roots) {
+          const config = configMap[root]
+          dispatch({type: 'status', root, value: 'building'})
+          const watcher = chokidar.watch(['**/*.mdx'], {
+            cwd: path.dirname(config.index),
+            depth: 99,
+            persistent: true,
+            awaitWriteFinish: true,
+            ignoreInitial: true,
+          })
+          watcher.on('ready', () =>
+            build(config).then(() =>
+              dispatch({type: 'status', root, value: 'built'})
+            )
+          )
+          const rebuilding = debounce(() => {
+            dispatch({type: 'status', root, value: 'rebuilding'})
+            build(config).then(() =>
+              dispatch({type: 'status', root, value: 'rebuilt'})
+            )
+          }, 500) as any
+          watcher.on('add', rebuilding)
+          watcher.on('change', rebuilding)
+          watcher.on('unlink', rebuilding)
+        }
       }, [])
 
       React.useEffect(() => {
         // Ignore loading messages
-        if (!message.startsWith('⋯')) {
-          const timeout = setTimeout(() => setMessage('Watching'), 2000)
-          return () => clearTimeout(timeout)
-        }
+        const timeout = setTimeout(() => {
+          for (const root in roots)
+            if (
+              roots[root].status !== 'idle' &&
+              roots[root].status !== 'building'
+            )
+              dispatch({type: 'status', root, value: 'watching'})
+        }, 2000)
+        return () => clearTimeout(timeout)
       })
 
       return (
-        <Box>
-          <Text
-            bold
-            backgroundColor='#4C51BF'
-            color='#EBF4FF'
-          >{` ${message} `}</Text>
-          <Text> {indexFile}</Text>
+        <Box flexDirection='column'>
+          {Object.keys(roots).map((root) => {
+            const {status, error} = roots[root]
+            return (
+              <Box
+                key={root}
+                flexDirection={status === 'error' ? 'column' : 'row'}
+              >
+                <Text
+                  bold
+                  backgroundColor={
+                    status === 'watching'
+                      ? '#805AD5'
+                      : status === 'rebuilding' || status === 'building'
+                      ? '#4C51BF'
+                      : status === 'error'
+                      ? '#E53E3E'
+                      : '#319795'
+                  }
+                  color='#EBF4FF'
+                >{` ${
+                  status === 'building' || status === 'idle'
+                    ? 'Building'
+                    : status === 'rebuilding'
+                    ? 'Rebuilding'
+                    : status === 'watching'
+                    ? 'Watching'
+                    : status === 'error'
+                    ? 'Error'
+                    : 'Built'
+                } `}</Text>
+                <Text>
+                  {' '}
+                  {error || (
+                    <React.Fragment>
+                      <Text bold>{root}</Text>{' '}
+                      <Text color='gray'>
+                        {path.relative(process.cwd(), configMap[root].index)}
+                      </Text>
+                    </React.Fragment>
+                  )}
+                </Text>
+              </Box>
+            )
+          })}
         </Box>
       )
     })
   )
 }
+
+type WatchState = Record<
+  string,
+  {
+    status: WatchStatus
+    error?: Error
+  }
+>
+
+type WatchAction =
+  | {
+      root: string
+      type: 'status'
+      value: Exclude<WatchStatus, 'error'>
+    }
+  | {
+      root: string
+      type: 'status'
+      value: 'error'
+      error: Error
+    }
+
+type WatchStatus =
+  | 'idle'
+  | 'building'
+  | 'rebuilding'
+  | 'built'
+  | 'rebuilt'
+  | 'watching'

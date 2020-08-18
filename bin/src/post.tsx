@@ -6,19 +6,23 @@ import {render, Box, Text} from 'ink'
 import TextInput from 'ink-text-input'
 import openEditor from 'open-editor'
 import slugify from 'slugify'
+import BigText from 'ink-big-text'
 import {QuickSearch} from './components/quick-search-input'
 import type {Item} from './components/quick-search-input'
-import {bin as buildBin} from './build'
+import type {ProserConfig} from './types'
+import {build} from './build'
 import {writePost, importIndexFile} from './utils'
 
 const glob = promisify(glob_)
 
-export async function bin(indexFile: string) {
+export async function post(configMap: Record<string, ProserConfig>) {
+  const configName = Object.keys(configMap)[0]
+  const config = configMap[configName]
   const slugs = []
   let id = 0
 
   for (const file of await glob('**/*.mdx', {
-    cwd: path.dirname(indexFile),
+    cwd: path.dirname(config.index),
     absolute: true,
   })) {
     const basename = path.basename(file)
@@ -26,7 +30,7 @@ export async function bin(indexFile: string) {
     id = Math.max(parseInt(basename.split('-')[0]) + 1, id)
   }
 
-  const indexFileExports = await importIndexFile(indexFile)
+  const indexFileExports = await importIndexFile(config.index)
   let defaultTags: {label: string; value: string}[] = []
   let defaultCategories: {label: string; value: string}[] = []
   if (indexFileExports) {
@@ -48,35 +52,7 @@ export async function bin(indexFile: string) {
         {title, description, categories, tags, slug, error, step},
         dispatch,
       ] = React.useReducer(
-        (
-          state: {
-            title: string
-            description: string
-            categories: string[]
-            tags: string[]
-            slug: string
-            error: string
-            step: number
-          },
-          action:
-            | {
-                type: 'set'
-                key: string
-                value: string
-              }
-            | {
-                type: 'setError'
-                value: string
-              }
-            | {
-                type: 'continue'
-              }
-            | {
-                type: 'taxonomy'
-                key: 'tags' | 'categories'
-                value: any
-              }
-        ) => {
+        (state: PostState, action: PostAction) => {
           if (action.type === 'set') {
             state = {...state, error: '', [action.key]: action.value}
 
@@ -190,7 +166,7 @@ export async function bin(indexFile: string) {
       React.useEffect(() => {
         if (step === steps.length) {
           const filepath = path.join(
-            path.dirname(indexFile),
+            path.dirname(config.index),
             `${id}-${slug}.mdx`
           )
 
@@ -206,12 +182,16 @@ export async function bin(indexFile: string) {
             .then(() => {
               openEditor([filepath], {})
             })
-            .then(() => buildBin(indexFile))
+            .then(() => build(config))
         }
       }, [step, slug, description, title, tags, categories, steps])
 
       return (
         <Box flexDirection='column'>
+          <BigText
+            font='tiny'
+            text={configName === 'default' ? 'Proser' : configName}
+          />
           {steps.map(
             (
               {
@@ -344,3 +324,32 @@ export function taxonomy<T extends Record<string, any>>(
     return acc
   }, {} as Record<string, T[]>)
 }
+
+type PostState = {
+  title: string
+  description: string
+  categories: string[]
+  tags: string[]
+  slug: string
+  error: string
+  step: number
+}
+
+type PostAction =
+  | {
+      type: 'set'
+      key: string
+      value: string
+    }
+  | {
+      type: 'setError'
+      value: string
+    }
+  | {
+      type: 'continue'
+    }
+  | {
+      type: 'taxonomy'
+      key: 'tags' | 'categories'
+      value: any
+    }

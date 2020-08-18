@@ -3,18 +3,25 @@ import {promisify} from 'util'
 import glob_ from 'glob'
 import React from 'react'
 import {render, Box, Text} from 'ink'
-import {bin as buildBin} from './build'
+import BigText from 'ink-big-text'
+import {build} from './build'
+import type {ProserConfig} from './types'
 import {deletePost} from './utils'
 import {ConfirmInput} from './components/confirm-input'
 import {QuickSearch} from './components/quick-search-input'
 
 const glob = promisify(glob_)
 
-export async function bin(indexFile: string, argv: {slug?: string} = {}) {
+export async function del(
+  configMap: Record<string, ProserConfig>,
+  argv: {slug?: string} = {}
+) {
+  const configName = Object.keys(configMap)[0]
+  const config = configMap[configName]
   const slugs = []
 
   for (const filepath of await glob('**/*.mdx', {
-    cwd: path.dirname(indexFile),
+    cwd: path.dirname(config.index),
     absolute: true,
   })) {
     const slug = path
@@ -47,12 +54,17 @@ export async function bin(indexFile: string, argv: {slug?: string} = {}) {
 
       React.useEffect(() => {
         if (result && confirmed) {
-          deletePost(result.filepath).then(() => buildBin(indexFile))
+          deletePost(result.filepath).then(() => build(config))
         }
       }, [result, confirmed])
 
       return (
         <Box flexDirection='column'>
+          <BigText
+            font='tiny'
+            text={configName === 'default' ? 'Proser' : configName}
+          />
+
           {!result && (
             <QuickSearch items={slugs} onSelect={(item) => setResult(item)} />
           )}
