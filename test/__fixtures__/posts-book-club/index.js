@@ -10,6 +10,7 @@ export const postsMap = {
   'ehh-default-template': {
     id: 0,
     slug: 'ehh-default-template',
+
     component: /*#__PURE__*/ React.lazy(() =>
       import('./0-ehh-default-template.mdx')
     ),

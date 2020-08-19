@@ -22,12 +22,12 @@ export async function build(config: ProserConfig) {
 
   const exportsStrings = await Promise.all(exportsPromises)
   await writePosts(
-    config.index,
+    config,
     filepaths.map((filepath, i) => ({filepath, exports: exportsStrings[i]}))
   )
 }
 
-export async function bin(
+export async function buildRenderer(
   configMap: Record<string, ProserConfig>,
   argv: {slug?: string; [key: string]: any} = {}
 ) {
@@ -51,7 +51,7 @@ export async function bin(
             status: 'loading',
           }
           return acc
-        }, {})
+        }, {} as BuildState)
       )
 
       React.useEffect(() => {
@@ -65,6 +65,7 @@ export async function bin(
               dispatch({type: 'status', root, value: 'error', error})
             })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
 
       return (

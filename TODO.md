@@ -6,8 +6,7 @@
     the correct root.
   - `build` and `watch` should accept multiple indexes as an argument
 - [x] Custom template paths
-- [ ] Plugin system for `build` and `post` (medium)
-- [ ] `proser.config.js` file (maybe? only if necessary for now.)
+- [x] Plugin system for `build` and `post` (medium)
 
 ## `package.json` configuration
 
@@ -29,7 +28,11 @@
   "proser": {
     "blog": {
       "index": "path/to/blog/posts/index.js",
-      "template": "path/to/my-template.mdx"
+      "template": "path/to/my-template.mdx",
+      "babel": {
+        "plugins": ["babel-plugin-edit-my-index-file"],
+        "presets": ["babel-preset-edit-my-index-file"]
+      }
     },
     "recipes": {
       "index": "path/to/recipes/posts/index.js",
@@ -43,18 +46,22 @@
 
 > WIP: Needs a lot of careful attention
 
-```ts
-type ProserPost = {
-  filepath: string
-  exports: {}
-}
+What can a plugin do? Right now, add custom inputs to `post`
 
-type ProserPlugin = (type: 'build' | 'post', posts: ProserPost[]) => any
+```tsx
+type ProserPlugin = (
+  options: Record<string, any>
+) => ({status, onSubmit}) => React.ComponentType | null
 
-const MyPlugin: ProserPlugin = (type, posts) => {
-  if (type === 'build') {
-  } else if (type === 'post') {
-  }
+const MyPlugin: ProserPlugin = (options) => {
+  const [value, setValue] = React.useState('')
+  return ({onSubmit}) => (
+    <TextInput
+      value={value}
+      onChange={setValue}
+      onSubmit={() => onSubmit({myMetadata: value})}
+    />
+  )
 }
 
 export default MyPlugin

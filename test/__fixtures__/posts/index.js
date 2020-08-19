@@ -91,6 +91,19 @@ export const postsMap = {
       categories: [],
     },
   },
+  'good-times': {
+    id: 9,
+    slug: 'good-times',
+    component: /*#__PURE__*/ React.lazy(() => import('./9-good-times.mdx')),
+    metadata: {
+      title: 'Good times',
+      description: 'awefwaeg',
+      timestamp: 1597798256774,
+      tags: [],
+      categories: [],
+      myMetadata: 'asdgalgew',
+    },
+  },
 }
 
 export const posts = Object.values(postsMap)

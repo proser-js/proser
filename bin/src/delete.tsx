@@ -3,6 +3,7 @@ import {promisify} from 'util'
 import glob_ from 'glob'
 import React from 'react'
 import {render, Box, Text} from 'ink'
+// @ts-ignore
 import BigText from 'ink-big-text'
 import {build} from './build'
 import type {ProserConfig} from './types'
@@ -18,7 +19,7 @@ export async function del(
 ) {
   const configName = Object.keys(configMap)[0]
   const config = configMap[configName]
-  const slugs = []
+  const slugs: {value: string; label: string; filepath: string}[] = []
 
   for (const filepath of await glob('**/*.mdx', {
     cwd: path.dirname(config.index),
@@ -37,10 +38,12 @@ export async function del(
 
   render(
     React.createElement(() => {
-      const [result, setResult] = React.useState<typeof slugs[0]>(
+      const [result, setResult] = React.useState<typeof slugs[0] | undefined>(
         slugs.find((s) => s.value === argv.slug)
       )
-      const [confirmed, setConfirmed] = React.useState<boolean>(undefined)
+      const [confirmed, setConfirmed] = React.useState<boolean | undefined>(
+        undefined
+      )
       const [error, setError] = React.useState('')
 
       React.useEffect(() => {
@@ -66,7 +69,10 @@ export async function del(
           />
 
           {!result && (
-            <QuickSearch items={slugs} onSelect={(item) => setResult(item)} />
+            <QuickSearch
+              items={slugs}
+              onSelect={(item) => setResult(item as typeof slugs[0])}
+            />
           )}
 
           {result && confirmed === undefined && (
@@ -85,7 +91,7 @@ export async function del(
           )}
 
           {confirmed === false && <Text>Nothing was deleted.</Text>}
-          {confirmed === true && (
+          {result && confirmed === true && (
             <Box flexDirection='row'>
               <Text bold backgroundColor='#4C51BF' color='#EBF4FF'>
                 {` Deleting `}

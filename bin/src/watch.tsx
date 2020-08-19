@@ -12,8 +12,10 @@ export async function watch(
 ) {
   render(
     React.createElement(() => {
-      const [roots, dispatch] = React.useReducer(
-        (state: WatchState, action: WatchAction) => {
+      const [roots, dispatch] = React.useReducer<
+        React.Reducer<WatchState, WatchAction>
+      >(
+        (state, action) => {
           switch (action.type) {
             case 'status':
               return {
@@ -27,13 +29,11 @@ export async function watch(
         },
         Object.keys(configMap).reduce((acc, key) => {
           acc[key] = {
-            status: 'loading',
+            status: 'building',
           }
           return acc
-        }, {})
+        }, {} as WatchState)
       )
-
-      const [message, setMessage] = React.useState('⋯ Watching')
 
       React.useEffect(() => {
         for (const root in roots) {
@@ -61,6 +61,7 @@ export async function watch(
           watcher.on('change', rebuilding)
           watcher.on('unlink', rebuilding)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
 
       React.useEffect(() => {
@@ -156,3 +157,4 @@ type WatchStatus =
   | 'built'
   | 'rebuilt'
   | 'watching'
+  | 'error'

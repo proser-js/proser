@@ -15,8 +15,6 @@ import isEqual from 'lodash.isequal'
 // available.
 import keypress from 'keypress'
 
-const defaultValue = {label: ''} // Used as return for empty array
-
 export type IsSelected = PropsWithChildren<{
   isSelected: boolean
 }>
@@ -91,8 +89,10 @@ export const QuickSearch: FC<QuickSearchProps> = (props) => {
     function listenToRawKeyboard() {
       keypress(inkStdin.stdin)
       if (inkStdin.isRawModeSupported) inkStdin.setRawMode(true)
+      // @ts-expect-error
       inkStdin.stdin.addListener('keypress', handleKeyPress)
       return () => {
+        // @ts-expect-error
         inkStdin.stdin.removeListener('keypress', handleKeyPress)
         if (inkStdin.isRawModeSupported) inkStdin.setRawMode(false)
       }

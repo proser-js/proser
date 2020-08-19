@@ -15,11 +15,11 @@ npm i proser
   <a aria-label="Types" href="https://www.npmjs.com/package/proser">
     <img alt="Types" src="https://img.shields.io/npm/types/proser?style=for-the-badge&labelColor=24292e">
   </a>
-  <a aria-label="Code coverage report" href="https://codecov.io/gh/jaredLunde/proser">
-    <img alt="Code coverage" src="https://img.shields.io/codecov/c/gh/jaredLunde/proser?style=for-the-badge&labelColor=24292e">
+  <a aria-label="Code coverage report" href="https://codecov.io/gh/proser-js/proser">
+    <img alt="Code coverage" src="https://img.shields.io/codecov/c/gh/proser-js/proser?style=for-the-badge&labelColor=24292e">
   </a>
-  <a aria-label="Build status" href="https://travis-ci.com/jaredLunde/proser">
-    <img alt="Build status" src="https://img.shields.io/travis/com/jaredLunde/proser?style=for-the-badge&labelColor=24292e">
+  <a aria-label="Build status" href="https://travis-ci.com/proser-js/proser">
+    <img alt="Build status" src="https://img.shields.io/travis/com/proser-js/proser?style=for-the-badge&labelColor=24292e">
   </a>
   <a aria-label="NPM version" href="https://www.npmjs.com/package/proser">
     <img alt="NPM Version" src="https://img.shields.io/npm/v/proser?style=for-the-badge&labelColor=24292e">

@@ -3,11 +3,14 @@ import {runInThisContext} from 'vm'
 import Module from 'module'
 import {promises as fs, existsSync} from 'fs'
 import * as types from 'babel-types'
+// @ts-ignore
 import {createCompiler} from '@mdx-js/mdx'
+// @ts-ignore
 import instTemplate from '@inst-cli/template'
 import generate from '@babel/generator'
 import {transformAsync, parseAsync, parse} from '@babel/core'
 import prettier from 'prettier'
+import type {ProserConfig} from './types'
 
 const DEFAULT_POSTS_CONTENTS = `/**
  * ⚠️ DO NOT EDIT
@@ -51,12 +54,12 @@ export const posts: Post[];
 `
 
 export async function writePosts(
-  indexFile: string,
+  config: ProserConfig,
   posts: {filepath: string; exports: string}[]
 ) {
   let contents = DEFAULT_POSTS_CONTENTS
-  if (existsSync(indexFile)) {
-    contents = await fs.readFile(indexFile, 'utf-8')
+  if (existsSync(config.index)) {
+    contents = await fs.readFile(config.index, 'utf-8')
   }
   const originalContents = contents
   const presets = [
@@ -73,7 +76,7 @@ export async function writePosts(
 
   for (const post of posts) {
     const exportsAst = await parseAsync(post.exports, {
-      filename: indexFile.replace('.js', '.tsx'),
+      filename: config.index.replace('.js', '.tsx'),
       babelrc: false,
       configFile: false,
       presets,
@@ -82,7 +85,7 @@ export async function writePosts(
     // @ts-ignore
     const exportsBody = exportsAst.program.body
 
-    let componentPath = path.relative(path.dirname(indexFile), post.filepath)
+    let componentPath = path.relative(path.dirname(config.index), post.filepath)
     componentPath = !componentPath.startsWith('.')
       ? './' + componentPath
       : componentPath
@@ -90,7 +93,7 @@ export async function writePosts(
     const componentAst = await parseAsync(
       `React.lazy(() => import('${componentPath}'))`,
       {
-        filename: indexFile.replace('.js', '.tsx'),
+        filename: config.index.replace('.js', '.tsx'),
         babelrc: false,
         configFile: false,
         presets,
@@ -112,21 +115,21 @@ export async function writePosts(
   }
 
   const t = await transformAsync(contents, {
-    filename: indexFile.replace('.js', '.tsx'),
+    filename: config.index.replace('.js', '.tsx'),
     babelrc: false,
     configFile: false,
     retainLines: true,
-    presets,
+    presets: [...presets, ...(config.babel?.presets || [])],
     plugins: [
       function babelPlugin({types: t}: {types: typeof types}) {
         const plugin = {
           visitor: {
-            ExportDeclaration(nodePath) {
+            ExportDeclaration(nodePath: any) {
               // Find only the "posts" declarator. We need it,
               // so we can bail if it isn't here.
               const postsDeclarator = (
                 nodePath.node.declaration.declarations || []
-              ).find((declarator) => declarator.id.name === 'postsMap')
+              ).find((declarator: any) => declarator.id.name === 'postsMap')
               if (!postsDeclarator) return
 
               const currentPosts = postsDeclarator.init.properties
@@ -156,7 +159,7 @@ export async function writePosts(
                 // one
                 const currentProperties = currentPosts[i].value.properties
                 const componentPropertyIndex = currentProperties.findIndex(
-                  (prop) => prop.key.name === 'component'
+                  (prop: any) => prop.key.name === 'component'
                 )
                 const componentProperty =
                   currentProperties[componentPropertyIndex]
@@ -177,7 +180,7 @@ export async function writePosts(
                   )
                 )
                 nextProperties.push(
-                  ...nextPost.exports.map((exp) => {
+                  ...nextPost.exports.map((exp: any) => {
                     const declarator = exp.declaration.declarations[0]
                     return t.objectProperty(declarator.id, declarator.init)
                   })
@@ -206,7 +209,7 @@ export async function writePosts(
                         t.stringLiteral('component'),
                         data.component.expression
                       ),
-                      ...data.exports.map((exp) => {
+                      ...data.exports.map((exp: any) => {
                         const declarator = exp.declaration.declarations[0]
                         return t.objectProperty(declarator.id, declarator.init)
                       }),
@@ -220,25 +223,29 @@ export async function writePosts(
 
         return plugin
       },
+      ...(config.babel?.plugins || []),
     ],
   })
 
-  contents = t.code
+  contents = t?.code || ''
   const options = await prettier.resolveConfig(process.cwd())
 
   // Writes the JS file if it changed
   if (originalContents !== contents) {
-    const dirname = path.dirname(indexFile)
+    const dirname = path.dirname(config.index)
     if (!existsSync(dirname)) await fs.mkdir(dirname, {recursive: true})
 
     await fs.writeFile(
-      indexFile,
+      config.index,
       prettier.format(contents, {parser: 'babel', ...options})
     )
   }
 
   // Writes the TypeScript declarations
-  const declarationFile = indexFile.replace(path.extname(indexFile), '.d.ts')
+  const declarationFile = config.index.replace(
+    path.extname(config.index),
+    '.d.ts'
+  )
 
   if (!existsSync(declarationFile)) {
     await fs.writeFile(
@@ -257,7 +264,7 @@ export async function readMetadata(filepath: string) {
     remarkPlugins: [
       // This is a plugin that pushes all of the exports to the
       // mdxExports array
-      () => (tree) => {
+      () => (tree: any) => {
         for (const i in tree.children) {
           const child = tree.children[i]
 
@@ -302,7 +309,7 @@ export async function writePost(
     }
   }
 
-  const placeholders = []
+  const placeholders: [string, string][] = []
   let stringified = JSON.stringify(
     metadata,
     function (_, val) {
@@ -338,14 +345,10 @@ export async function writePost(
   ).code
   const tpl = instTemplate(template, {vars: /{{([\s\w.]+?)}}/g})
   const prettierOptions = await prettier.resolveConfig(process.cwd())
-  const contents = prettier.format(
-    `${metadataAst}\n\n` +
-      tpl({
-        title: metadata.title,
-        description: metadata.description,
-      }),
-    {parser: 'mdx', ...prettierOptions}
-  )
+  const contents = prettier.format(`${metadataAst}\n\n` + tpl(metadata), {
+    parser: 'mdx',
+    ...prettierOptions,
+  })
 
   const dirname = path.dirname(filepath)
   if (!existsSync(dirname)) await fs.mkdir(dirname, {recursive: true})
@@ -369,7 +372,6 @@ export async function importIndexFile(indexFile: string) {
   }
 
   try {
-    // Allows ES6 lundle configs
     const t = await transformAsync(indexFileContents, {
       filename: indexFile,
       presets: [
