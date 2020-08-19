@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.10](https://github.com/proser-js/proser/compare/v0.1.9...v0.1.10) (2020-08-19)
+
+### Features
+
+- add custom templates ([684aaac](https://github.com/proser-js/proser/commit/684aaacf8efad81c79137d66c6422f302dfb2220))
+- add plugin system ([64ece70](https://github.com/proser-js/proser/commit/64ece709ec774511342e32f596c261673357b299))
+- add support for multiple roots ([b45404c](https://github.com/proser-js/proser/commit/b45404cb7d22771f3413648c78dff6bf1f9adf20))
+- make the config api match the todo ([aa9e000](https://github.com/proser-js/proser/commit/aa9e000d268e98566d6361abcc7d787b926942e3))
+
 ### [0.1.9](https://github.com/jaredLunde/proser/compare/v0.1.8...v0.1.9) (2020-08-17)
 
 ### Bug Fixes
