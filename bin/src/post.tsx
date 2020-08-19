@@ -348,7 +348,7 @@ export function TaxonomicInput({
   return (
     <Box flexDirection='column' marginBottom={1}>
       {(status === 'complete' || status === 'active') && value.length > 0 && (
-        <Text bold>{value.join(', ')}</Text>
+        <Text>{value.join(', ')}</Text>
       )}
 
       {status === 'active' && (
