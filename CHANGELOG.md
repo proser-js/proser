@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.11](https://github.com/proser-js/proser/compare/v0.1.10...v0.1.11) (2020-08-19)
+
+### Bug Fixes
+
+- fix issue where non-proser mdx files were matched in commands ([66fc482](https://github.com/proser-js/proser/commit/66fc4822c40ba3961820a6e1f4078ea619c21038))
+- remove bold ([df78473](https://github.com/proser-js/proser/commit/df78473d80ef4e3534e93f3c05a9726bd05e2c81))
+
 ### [0.1.10](https://github.com/proser-js/proser/compare/v0.1.9...v0.1.10) (2020-08-19)
 
 ### Features
