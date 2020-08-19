@@ -16,6 +16,7 @@ export async function build(config: ProserConfig) {
     cwd: path.dirname(config.index),
     absolute: true,
   })) {
+    if (!/^[0-9]+-/.test(path.basename(file))) continue
     filepaths.push(file)
     exportsPromises.push(readMetadata(file))
   }

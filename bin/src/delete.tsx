@@ -25,10 +25,9 @@ export async function del(
     cwd: path.dirname(config.index),
     absolute: true,
   })) {
-    const slug = path
-      .basename(filepath)
-      .replace('.mdx', '')
-      .replace(/^[0-9]+?-/, '')
+    const basename = path.basename(filepath)
+    if (!/^[0-9]+-/.test(basename)) continue
+    const slug = basename.replace('.mdx', '').replace(/^[0-9]+?-/, '')
     slugs.push({
       value: slug,
       label: slug,

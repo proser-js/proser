@@ -33,6 +33,7 @@ export async function post(
     absolute: true,
   })) {
     const basename = path.basename(file)
+    if (!/^[0-9]+-/.test(basename)) continue
     slugs.push(basename.replace('.mdx', '').replace(/^[0-9]+?-/, ''))
     id = Math.max(parseInt(basename.split('-')[0]) + 1, id)
   }
