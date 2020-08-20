@@ -107,11 +107,11 @@ export declare function useCategories<T extends PostLike>(
  * @param weight
  *
  * @example
- * useRelatedPosts(post, posts, {tags: 1, categories: 2})
+ * useRelatedPosts(posts, post, {tags: 1, categories: 2})
  */
 export declare function useRelatedPosts<T extends PostLike>(
-  post: T,
   posts: T[],
+  post: T,
   weight?: {
     [taxonomy: string]: number
   }
