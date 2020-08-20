@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14](https://github.com/proser-js/proser/compare/v0.1.13...v0.1.14) (2020-08-20)
+
+### Features
+
+- add cached file reader utility ([b55e9bf](https://github.com/proser-js/proser/commit/b55e9bf646b05d3436eef1b7f90e606e27ac08c0))
+
 ### [0.1.13](https://github.com/proser-js/proser/compare/v0.1.12...v0.1.13) (2020-08-20)
 
 ### Bug Fixes

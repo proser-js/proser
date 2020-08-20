@@ -6,7 +6,12 @@ export declare function writePosts(
     exports: string
   }[]
 ): Promise<void>
-export declare function readMetadata(filepath: string): Promise<string>
+export declare function readFileCache(filepath: string): string
+export declare function readFileCacheAsync(filepath: string): Promise<string>
+export declare function readMetadata(
+  filepath: string,
+  fromCache?: boolean
+): Promise<string>
 export declare function writePost(
   filepath: string,
   options?: {
