@@ -283,7 +283,7 @@ export async function readFileCacheAsync(filepath: string) {
   return file
 }
 
-export async function readMetadata(filepath: string, fromCache = false) {
+export async function readMetadata(filepath: string, fromCache = true) {
   const contents = await (fromCache ? fs.readFile : readFileCacheAsync)(
     filepath,
     // @ts-expect-error
