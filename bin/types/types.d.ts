@@ -11,11 +11,11 @@ export declare type ProserConfig = {
 export declare type ProserPluginItem = string | [string, Record<string, any>]
 export declare type ProserBabelPluginOptions = {
   config: ProserConfig
-  posts: {
+  post: {
     filepath: string
     id: number
     slug: string
     exports: Node
     component: Node
-  }[]
+  }
 }

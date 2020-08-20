@@ -105,14 +105,16 @@ export async function writePosts(
     const basename = path.basename(post.filepath)
     const [id, ...slugParts] = basename.split('-')
     const slug = slugParts.join('-').replace('.mdx', '')
-    postData.push({
+    const currentData = {
       filepath: post.filepath,
       id: parseInt(id),
       slug,
       exports: exportsBody,
       component: componentBody[0],
-    })
+    }
+    postData.push(currentData)
   }
+  const postDataCopy = postData.slice(0)
 
   const t = await transformAsync(contents, {
     filename: config.index.replace('.js', '.tsx'),
@@ -225,7 +227,7 @@ export async function writePosts(
       },
       ...(config.babel?.plugins || []).map((plugin) => [
         plugin,
-        {posts, config},
+        {posts: postDataCopy, config},
       ]),
     ],
   })
