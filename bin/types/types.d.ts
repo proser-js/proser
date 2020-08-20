@@ -1,4 +1,4 @@
-import type {PluginItem} from '@babel/core'
+import type {PluginItem, Node} from '@babel/core'
 export declare type ProserConfig = {
   index: string
   template?: string
@@ -9,3 +9,13 @@ export declare type ProserConfig = {
   }
 }
 export declare type ProserPluginItem = string | [string, Record<string, any>]
+export declare type ProserBabelPlugin = {
+  config: ProserConfig
+  posts: {
+    filepath: string
+    id: number
+    slug: string
+    exports: Node
+    component: Node
+  }[]
+}

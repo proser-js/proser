@@ -223,7 +223,10 @@ export async function writePosts(
 
         return plugin
       },
-      ...(config.babel?.plugins || []),
+      ...(config.babel?.plugins || []).map((plugin) => [
+        plugin,
+        {posts, config},
+      ]),
     ],
   })
 
