@@ -202,7 +202,7 @@ describe('useCategory()', () => {
 describe('useRelatedPosts()', () => {
   it('should pass', () => {
     const {result} = renderHook(() =>
-      useRelatedPosts(defaultPosts[0], defaultPosts)
+      useRelatedPosts(defaultPosts, defaultPosts[0])
     )
 
     expect(result.current).toEqual([defaultPosts[1], defaultPosts[2]])
@@ -243,7 +243,7 @@ describe('useRelatedPosts()', () => {
     ]
 
     const {result, rerender} = renderHook(
-      ({weight}) => useRelatedPosts(posts[0], posts, weight),
+      ({weight}) => useRelatedPosts(posts, posts[0], weight),
       {
         initialProps: {
           weight: {
@@ -301,7 +301,7 @@ describe('useRelatedPosts()', () => {
     ]
 
     const {result} = renderHook(
-      ({weight}) => useRelatedPosts(posts[0], posts, weight),
+      ({weight}) => useRelatedPosts(posts, posts[0], weight),
       {
         initialProps: {
           weight: {

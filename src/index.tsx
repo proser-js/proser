@@ -130,11 +130,11 @@ export function useCategories<T extends PostLike>(
  * @param weight
  *
  * @example
- * useRelatedPosts(post, posts, {tags: 1, categories: 2})
+ * useRelatedPosts(posts, post, {tags: 1, categories: 2})
  */
 export function useRelatedPosts<T extends PostLike>(
-  post: T,
   posts: T[],
+  post: T,
   weight: {[taxonomy: string]: number} = {tags: 0.5, categories: 1}
 ) {
   const weightKey = JSON.stringify(weight)
@@ -173,7 +173,7 @@ export function useRelatedPosts<T extends PostLike>(
     }
 
     return posts
-      .filter((p) => p !== post)
+      .filter((p) => p.id !== post.id)
       .sort((a, b) => (weights.get(b) || 0) - (weights.get(a) || 0))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [posts, weightKey])
