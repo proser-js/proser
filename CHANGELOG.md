@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.13](https://github.com/proser-js/proser/compare/v0.1.12...v0.1.13) (2020-08-20)
+
+### Bug Fixes
+
+- fix post data passed to babel plugins ([6d2e11a](https://github.com/proser-js/proser/commit/6d2e11a0ec1e393d78f089dc91a1577fe50bfa2a))
+
 ### [0.1.12](https://github.com/proser-js/proser/compare/v0.1.11...v0.1.12) (2020-08-20)
 
 ### Features
