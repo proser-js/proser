@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.16](https://github.com/proser-js/proser/compare/v0.1.14...v0.1.16) (2020-08-20)
+
+### Bug Fixes
+
+- **types:** fix types ([f8a9c2e](https://github.com/proser-js/proser/commit/f8a9c2e9c97905727823bba42bc9968f51c24807))
+- fix caching in readMetadata ([35e6440](https://github.com/proser-js/proser/commit/35e64403644de63b06a5d8fdf62cfccb8688c9fd))
+
 ### [0.1.15](https://github.com/proser-js/proser/compare/v0.1.14...v0.1.15) (2020-08-20)
 
 ### Bug Fixes
