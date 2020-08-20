@@ -5,4 +5,8 @@ export * from './delete'
 export * from './post'
 export * from './utils'
 export * from './watch'
-export type {ProserConfig, ProserBabelPlugin, ProserPluginItem} from './types'
+export type {
+  ProserConfig,
+  ProserBabelPluginOptions,
+  ProserPluginItem,
+} from './types'

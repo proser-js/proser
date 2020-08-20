@@ -9,7 +9,7 @@ export declare type ProserConfig = {
   }
 }
 export declare type ProserPluginItem = string | [string, Record<string, any>]
-export declare type ProserBabelPlugin = {
+export declare type ProserBabelPluginOptions = {
   config: ProserConfig
   posts: {
     filepath: string
