@@ -1,7 +1,7 @@
 import path from 'path'
 import {runInThisContext} from 'vm'
 import Module from 'module'
-import {promises as fs, existsSync} from 'fs'
+import {promises as fs, existsSync, readFileSync} from 'fs'
 import * as types from 'babel-types'
 // @ts-ignore
 import {createCompiler} from '@mdx-js/mdx'
@@ -10,6 +10,7 @@ import instTemplate from '@inst-cli/template'
 import generate from '@babel/generator'
 import {transformAsync, parseAsync, parse} from '@babel/core'
 import prettier from 'prettier'
+import Lru from 'lru-cache'
 import type {ProserConfig} from './types'
 
 const DEFAULT_POSTS_CONTENTS = `/**
@@ -260,8 +261,34 @@ export async function writePosts(
   }
 }
 
-export async function readMetadata(filepath: string) {
-  const contents = await fs.readFile(filepath, 'utf-8')
+const fileCache = new Lru<string, string>({
+  max: 500,
+  maxAge: 1000 * 60 * 60,
+})
+
+export function readFileCache(filepath: string) {
+  let file = fileCache.get(filepath)
+  if (!file) {
+    file = readFileSync(filepath, 'utf-8')
+  }
+  return file
+}
+
+export async function readFileCacheAsync(filepath: string) {
+  let file = fileCache.get(filepath)
+  if (!file) {
+    file = await fs.readFile(filepath, 'utf-8')
+  }
+  fileCache.set(filepath, file)
+  return file
+}
+
+export async function readMetadata(filepath: string, fromCache = false) {
+  const contents = await (fromCache ? fs.readFile : readFileCacheAsync)(
+    filepath,
+    // @ts-expect-error
+    'utf-8'
+  )
   // This variable stores the "export" fields in the mdx file
   let mdxExports = ''
   const compiler = createCompiler({

@@ -8,7 +8,7 @@ import type {ProserConfig} from './types'
 
 const glob = promisify(glob_)
 
-export async function build(config: ProserConfig) {
+export async function build(config: ProserConfig, watchMode = false) {
   const filepaths = []
   const exportsPromises = []
 
@@ -18,7 +18,7 @@ export async function build(config: ProserConfig) {
   })) {
     if (!/^[0-9]+-/.test(path.basename(file))) continue
     filepaths.push(file)
-    exportsPromises.push(readMetadata(file))
+    exportsPromises.push(readMetadata(file, false))
   }
 
   const exportsStrings = await Promise.all(exportsPromises)

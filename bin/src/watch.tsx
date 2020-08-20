@@ -47,13 +47,13 @@ export async function watch(
             ignoreInitial: true,
           })
           watcher.on('ready', () =>
-            build(config).then(() =>
+            build(config, true).then(() =>
               dispatch({type: 'status', root, value: 'built'})
             )
           )
           const rebuilding = debounce(() => {
             dispatch({type: 'status', root, value: 'rebuilding'})
-            build(config).then(() =>
+            build(config, true).then(() =>
               dispatch({type: 'status', root, value: 'rebuilt'})
             )
           }, 500) as any
