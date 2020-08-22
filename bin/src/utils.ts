@@ -39,7 +39,7 @@ import React from 'react';
 export type Post = {
   id: number;
   slug: string;
-  component: React.LazyExoticComponent<(props: any) => JSX.Element>;
+  component: React.LazyExoticComponent<React.ComponentType<any>>;
   metadata: {
     title: string;
     description: string;

@@ -200,6 +200,29 @@ export function slugify(value: string) {
   return baseSlugify(value, {lower: true, strict: true})
 }
 
+/**
+ * A function that preloads React.lazy() components
+ * @param component A React.lazy() component
+ */
+export function preload(
+  component: React.LazyExoticComponent<React.ComponentType<any>>
+) {
+  // So this is obviously a super jank way of doing this. It'd be
+  // nice if React would provide a mechanism outside of this jank.
+  // But until that day comes, we have to go with the jank.
+  //
+  // The name we are looking for below is _ctor but I didn't want to
+  // be presumptive about the capabilites of something like Closure
+  // Compiler and "private" methods.
+  return Object.values(component).find((value) => {
+    if (typeof value === 'function') {
+      try {
+        return 'then' in value()
+        // eslint-disable-next-line no-empty
+      } catch (e) {}
+    }
+  })()
+}
 function noop() {}
 
 export interface PostLike {
