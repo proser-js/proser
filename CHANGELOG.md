@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.17](https://github.com/proser-js/proser/compare/v0.1.16...v0.1.17) (2020-08-22)
+
+### Features
+
+- add preload utility ([02475d3](https://github.com/proser-js/proser/commit/02475d311379bf746d18a2a847f9af53de01af44))
+
 ### [0.1.16](https://github.com/proser-js/proser/compare/v0.1.14...v0.1.16) (2020-08-20)
 
 ### Bug Fixes

@@ -1,3 +1,4 @@
+import React from 'react'
 export declare function usePaginate<T>(
   posts: T[],
   options?: UsePaginateOptions
@@ -124,6 +125,13 @@ export declare function taxonomy<T extends PostLike>(
   posts: T[]
 }[]
 export declare function slugify(value: string): string
+/**
+ * A function that preloads React.lazy() components
+ * @param component A React.lazy() component
+ */
+export declare function preload(
+  component: React.LazyExoticComponent<React.ComponentType<any>>
+): any
 export interface PostLike {
   id: number
   slug: string
