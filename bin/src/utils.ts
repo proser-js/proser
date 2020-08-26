@@ -2,7 +2,6 @@ import path from 'path'
 import {runInThisContext} from 'vm'
 import Module from 'module'
 import {promises as fs, existsSync, readFileSync} from 'fs'
-import crypto from 'crypto'
 import * as types from '@babel/types'
 // @ts-ignore
 import {createCompiler} from '@mdx-js/mdx'
