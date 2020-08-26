@@ -273,7 +273,6 @@ export async function writePosts(
                     paths.forEach(
                       (stringPath: babel.NodePath<types.StringLiteral>) => {
                         if (types.isObjectProperty(stringPath.container)) {
-                          stringPath.container.computed = true
                           stringPath.replaceWith(types.expressionStatement(id))
                         } else {
                           stringPath.replaceWith(id)
