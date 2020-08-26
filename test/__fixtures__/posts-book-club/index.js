@@ -5,15 +5,14 @@
  * Edits may be overwritten.
  */
 import React from 'react'
+const {lazy} = React
 
 export const postsMap = {
   'ehh-default-template': {
     id: 0,
     slug: 'ehh-default-template',
 
-    component: /*#__PURE__*/ React.lazy(() =>
-      import('./0-ehh-default-template.mdx')
-    ),
+    component: lazy(() => import('./0-ehh-default-template.mdx')),
     metadata: {
       title: 'Ehh default template',
       description: 'back in style',

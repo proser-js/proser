@@ -2,7 +2,8 @@ import path from 'path'
 import {runInThisContext} from 'vm'
 import Module from 'module'
 import {promises as fs, existsSync, readFileSync} from 'fs'
-import * as types from 'babel-types'
+import crypto from 'crypto'
+import * as types from '@babel/types'
 // @ts-ignore
 import {createCompiler} from '@mdx-js/mdx'
 // @ts-ignore
@@ -20,9 +21,9 @@ const DEFAULT_POSTS_CONTENTS = `/**
  * Edits may be overwritten.
  */
 import React from 'react'
+const {lazy} = React
 
 export const postsMap = {}
-
 export const posts = Object.values(postsMap)
 export const postsMapById = posts.reduce((acc, post) => {
   acc[post.id] = post
@@ -92,7 +93,7 @@ export async function writePosts(
       : componentPath
 
     const componentAst = await parseAsync(
-      `React.lazy(() => import('${componentPath}'))`,
+      `lazy(() => import('${componentPath}'))`,
       {
         filename: config.index.replace('.js', '.tsx'),
         babelrc: false,
@@ -230,6 +231,103 @@ export async function writePosts(
         plugin,
         {posts: postDataCopy, config},
       ]),
+      function hoistCommonStrings() {
+        return {
+          visitor: {
+            StringLiteral(
+              path: babel.NodePath<types.StringLiteral>,
+              state: any
+            ) {
+              state.seen = state.seen || {}
+
+              if (
+                ((types.isObjectProperty(path.container) &&
+                  path.container.key !== path.node) ||
+                  types.isVariableDeclaration(path.container)) &&
+                !path.parentPath?.parentPath.node.leadingComments?.some(
+                  (comment) => comment.value === '__PROSER_HOISTED_STRINGS__'
+                )
+              ) {
+                state.seen[path.node.value] = state.seen[path.node.value] || []
+                state.seen[path.node.value].push(path)
+              }
+            },
+            Program: {
+              exit(path: babel.NodePath<types.Program>, state: any) {
+                let importIndex = 0
+                const declarations: types.VariableDeclarator[] = []
+
+                path.node.body.forEach((path, i) => {
+                  if (types.isImportDeclaration(path)) {
+                    importIndex = i
+                  }
+                })
+
+                let i = 0
+                for (const string in state.seen) {
+                  const paths = state.seen[string]
+
+                  if (paths.length > 1 && string.length > 3) {
+                    const id = types.identifier('_proserRef' + i++)
+
+                    paths.forEach(
+                      (stringPath: babel.NodePath<types.StringLiteral>) => {
+                        if (types.isObjectProperty(stringPath.container)) {
+                          stringPath.container.computed = true
+                          stringPath.replaceWith(types.expressionStatement(id))
+                        } else {
+                          stringPath.replaceWith(id)
+                        }
+                      }
+                    )
+
+                    declarations.push(
+                      types.variableDeclarator(id, types.stringLiteral(string))
+                    )
+                  }
+                }
+
+                if (declarations.length) {
+                  let decs:
+                    | babel.NodePath<types.VariableDeclaration>
+                    | types.VariableDeclaration
+
+                  path.traverse({
+                    VariableDeclaration(path) {
+                      if (
+                        path.node.leadingComments?.some(
+                          (comment) =>
+                            comment.value === '__PROSER_HOISTED_STRINGS__'
+                        )
+                      ) {
+                        decs = path
+                      }
+                    },
+                  })
+
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  if (!decs!) {
+                    decs = types.variableDeclaration('const', declarations)
+                    types.addComment(
+                      decs,
+                      'leading',
+                      '__PROSER_HOISTED_STRINGS__'
+                    )
+                    path.node.body.splice(importIndex + 1, 0, decs)
+                  } else {
+                    const nextDecs = types.variableDeclaration(
+                      'const',
+                      declarations
+                    )
+                    // @ts-ignore
+                    decs.replaceWith(nextDecs)
+                  }
+                }
+              },
+            },
+          },
+        }
+      },
     ],
   })
 

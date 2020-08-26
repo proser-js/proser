@@ -5,13 +5,14 @@
  * Edits may be overwritten.
  */
 import React from 'react'
+const {lazy} = React
 
 export const postsMap = {
   'hello-recipes': {
     id: 0,
     slug: 'hello-recipes',
 
-    component: /*#__PURE__*/ React.lazy(() => import('./0-hello-recipes.mdx')),
+    component: lazy(() => import('./0-hello-recipes.mdx')),
     metadata: {
       title: 'Hello recipes',
       description: 'maybe this does something',

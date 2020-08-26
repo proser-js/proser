@@ -5,16 +5,19 @@
  * Edits may be overwritten.
  */
 import React from 'react'
+/*__PROSER_HOISTED_STRINGS__*/ const _proserRef0 = 'whoa-whoa-whoa',
+  _proserRef1 = 'blah'
+const {lazy} = React
 
 export const postsMap = {
   'whoa-whoa-whoa': {
     id: 0,
-    slug: 'whoa-whoa-whoa',
+    ['slug']: _proserRef0,
 
-    component: /*#__PURE__*/ React.lazy(() => import('./0-whoa-whoa-whoa.mdx')),
+    component: lazy(() => import('./0-whoa-whoa-whoa.mdx')),
     metadata: {
       timestamp: 1597553433835,
-      title: 'Whoa whoa whoa',
+      [title]: _proserRef0,
       description: 'Hello hello hello',
       tags: [],
       categories: [],
@@ -26,7 +29,7 @@ export const postsMap = {
     id: 3,
     slug: 'fix-that-bug',
 
-    component: /*#__PURE__*/ React.lazy(() => import('./3-fix-that-bug.mdx')),
+    component: lazy(() => import('./3-fix-that-bug.mdx')),
     metadata: {
       title: 'Fix that bug',
       description: 'Does itfix the bug?',
@@ -40,7 +43,7 @@ export const postsMap = {
     id: 5,
     slug: 'foo',
 
-    component: /*#__PURE__*/ React.lazy(() => import('./5-foo.mdx')),
+    component: lazy(() => import('./5-foo.mdx')),
     metadata: {
       title: 'Foo',
       description: 'Bar',
@@ -52,12 +55,12 @@ export const postsMap = {
 
   blah: {
     id: 6,
-    slug: 'blah',
+    ['slug']: _proserRef1,
 
-    component: /*#__PURE__*/ React.lazy(() => import('./6-blah.mdx')),
+    component: lazy(() => import('./6-blah.mdx')),
     metadata: {
-      title: 'blah',
-      description: 'blah',
+      [title]: _proserRef1,
+      [description]: _proserRef1,
       timestamp: 1597676103578,
       tags: [],
       categories: [],
@@ -68,7 +71,7 @@ export const postsMap = {
     id: 7,
     slug: 'new-post',
 
-    component: /*#__PURE__*/ React.lazy(() => import('./7-new-post.mdx')),
+    component: lazy(() => import('./7-new-post.mdx')),
     metadata: {
       title: 'New post',
       description: 'Hello world',
@@ -82,7 +85,7 @@ export const postsMap = {
     id: 8,
     slug: 'big-time',
 
-    component: /*#__PURE__*/ React.lazy(() => import('./8-big-time.mdx')),
+    component: lazy(() => import('./8-big-time.mdx')),
     metadata: {
       title: 'Big time',
       description: 'Custom template???',
@@ -91,10 +94,12 @@ export const postsMap = {
       categories: [],
     },
   },
+
   'good-times': {
     id: 9,
     slug: 'good-times',
-    component: /*#__PURE__*/ React.lazy(() => import('./9-good-times.mdx')),
+
+    component: lazy(() => import('./9-good-times.mdx')),
     metadata: {
       title: 'Good times',
       description: 'awefwaeg',
