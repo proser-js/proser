@@ -5,13 +5,13 @@
  * Edits may be overwritten.
  */
 import React from 'react'
+/*__PROSER_HOISTED_STRINGS__*/ const _proserRef0 = 'hello-recipes'
 const {lazy} = React
 
 export const postsMap = {
   'hello-recipes': {
     id: 0,
     slug: 'hello-recipes',
-
     component: lazy(() => import('./0-hello-recipes.mdx')),
     metadata: {
       title: 'Hello recipes',

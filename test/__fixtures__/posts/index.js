@@ -5,40 +5,12 @@
  * Edits may be overwritten.
  */
 import React from 'react'
-/*__PROSER_HOISTED_STRINGS__*/ const _proserRef0 = 'whoa-whoa-whoa',
-  _proserRef1 = 'blah'
+/*__PROSER_HOISTED_STRINGS__*/ const _proserRef0 = 'blah',
+  _proserRef1 = 'whoa'
+
 const {lazy} = React
 
 export const postsMap = {
-  'whoa-whoa-whoa': {
-    id: 0,
-    ['slug']: _proserRef0,
-
-    component: lazy(() => import('./0-whoa-whoa-whoa.mdx')),
-    metadata: {
-      timestamp: 1597553433835,
-      [title]: _proserRef0,
-      description: 'Hello hello hello',
-      tags: [],
-      categories: [],
-    },
-    testing12: {34: 56},
-  },
-
-  'fix-that-bug': {
-    id: 3,
-    slug: 'fix-that-bug',
-
-    component: lazy(() => import('./3-fix-that-bug.mdx')),
-    metadata: {
-      title: 'Fix that bug',
-      description: 'Does itfix the bug?',
-      timestamp: 1597556571967,
-      tags: ['by', 'any', 'means', 'i', 'will', 'fight'],
-      categories: [],
-    },
-  },
-
   foo: {
     id: 5,
     slug: 'foo',
@@ -55,36 +27,57 @@ export const postsMap = {
 
   blah: {
     id: 6,
-    ['slug']: _proserRef1,
+    ['slug']: _proserRef0,
 
     component: lazy(() => import('./6-blah.mdx')),
     metadata: {
-      [title]: _proserRef1,
-      [description]: _proserRef1,
+      [title]: _proserRef0,
+      [description]: _proserRef0,
       timestamp: 1597676103578,
       tags: [],
       categories: [],
     },
   },
-
+  'whoa-whoa-whoa': {
+    id: 0,
+    slug: 'whoa-whoa-whoa',
+    component: lazy(() => import('./0-whoa-whoa-whoa.mdx')),
+    metadata: {
+      timestamp: 1597553433835,
+      title: 'Whoa whoa whoa',
+      description: 'Hello hello hello',
+      tags: [_proserRef1],
+      categories: [],
+    },
+    testing12: {34: 56},
+  },
+  'fix-that-bug': {
+    id: 3,
+    slug: 'fix-that-bug',
+    component: lazy(() => import('./3-fix-that-bug.mdx')),
+    metadata: {
+      title: 'Fix that bug',
+      description: 'Does itfix the bug?',
+      timestamp: 1597556571967,
+      tags: ['by', 'any', 'means', 'i', 'will', 'fight'],
+      categories: [],
+    },
+  },
   'new-post': {
     id: 7,
     slug: 'new-post',
-
     component: lazy(() => import('./7-new-post.mdx')),
     metadata: {
       title: 'New post',
       description: 'Hello world',
       timestamp: 1597760445534,
-      tags: [],
+      tags: [_proserRef1],
       categories: [],
     },
   },
-
   'big-time': {
     id: 8,
     slug: 'big-time',
-
     component: lazy(() => import('./8-big-time.mdx')),
     metadata: {
       title: 'Big time',
@@ -94,11 +87,9 @@ export const postsMap = {
       categories: [],
     },
   },
-
   'good-times': {
     id: 9,
     slug: 'good-times',
-
     component: lazy(() => import('./9-good-times.mdx')),
     metadata: {
       title: 'Good times',

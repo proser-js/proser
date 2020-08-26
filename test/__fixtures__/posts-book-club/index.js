@@ -5,13 +5,13 @@
  * Edits may be overwritten.
  */
 import React from 'react'
+/*__PROSER_HOISTED_STRINGS__*/ const _proserRef0 = 'ehh-default-template'
 const {lazy} = React
 
 export const postsMap = {
   'ehh-default-template': {
     id: 0,
     slug: 'ehh-default-template',
-
     component: lazy(() => import('./0-ehh-default-template.mdx')),
     metadata: {
       title: 'Ehh default template',

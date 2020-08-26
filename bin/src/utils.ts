@@ -242,7 +242,8 @@ export async function writePosts(
               if (
                 ((types.isObjectProperty(path.container) &&
                   path.container.key !== path.node) ||
-                  types.isVariableDeclaration(path.container)) &&
+                  types.isArrayExpression(path.parentPath) ||
+                  types.isVariableDeclarator(path.parentPath)) &&
                 !path.parentPath?.parentPath.node.leadingComments?.some(
                   (comment) => comment.value === '__PROSER_HOISTED_STRINGS__'
                 )
