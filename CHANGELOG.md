@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.20](https://github.com/proser-js/proser/compare/v0.1.19...v0.1.20) (2020-08-26)
+
+### Bug Fixes
+
+- remove computed object property setting ([ac2acaf](https://github.com/proser-js/proser/commit/ac2acafefe2fb473fa177c24cd20b9ee9e444e5f))
+
 ### [0.1.19](https://github.com/proser-js/proser/compare/v0.1.18...v0.1.19) (2020-08-26)
 
 ### Bug Fixes
